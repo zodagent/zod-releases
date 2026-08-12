@@ -1,16 +1,15 @@
 <!doctype html>
 <html lang="en" x-data data-theme="abyss" :data-theme="$store.settings.theme">
 <head>
-  <base href="/zod-releases/">
     <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0a0e1a" />
   <meta name="format-detection" content="telephone=no" />
-  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" />
-  <link rel="stylesheet" href="/assets/index-2ac3675b.css" />
-  <script src="/splash.js" defer></script>
+  <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
+  <link rel="stylesheet" href="./assets/index-75ed3c54.css" />
+  <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
   </head>
@@ -69,10 +68,11 @@
           <div x-show="hubView === 'home'" class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="min-h-full flex flex-col items-center justify-center p-4 sm:p-6">
               <div class="w-full max-w-lg">
-                  <!-- Logo -->
-                  <div class="flex justify-start mb-2">
-                    <span class="inline-block w-8 h-8 text-primary logo-hub" style="line-height:0">
-                      <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Logo + Greeting -->
+                  <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <span class="inline-block w-9 h-9 text-primary logo-hub shrink-0" style="line-height:0">
+                        <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
     <g>
       <g transform="matrix(0.47687, 0, 0, 0.47687, 413.827301, 109.812431)">
@@ -87,23 +87,19 @@
   </g>
 </svg>
 
-                    </span>
-                  </div>
-                  <!-- Greeting -->
-                  <div class="flex items-start justify-between mb-1">
-                    <h1 class="text-3xl sm:text-4xl font-medium text-primary">
-                      <span>Good </span><span>there.</span>
-                    </h1>
-                    <div class="flex flex-col items-end gap-1 shrink-0">
-                      <span class="text-xs sm:text-xs text-base-content/30 tabular-nums"
-                        x-text="now"></span>
+                      </span>
+                      <h1 class="text-2xl sm:text-4xl font-medium text-primary truncate">
+                        <span>Good </span><span>there.</span>
+                      </h1>
                     </div>
+                    <span class="text-xs text-base-content/30 tabular-nums shrink-0 ml-2"
+                      x-text="now"></span>
                   </div>
-                  <p class="text-xs sm:text-sm text-base-content/50"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
+                  <p class="text-xs sm:text-sm text-base-content/50 mt-0.5"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
 
                   <!-- Search Bar -->
                   <button @click="openHubSearch()"
-                    class="w-full flex items-center gap-3 bg-base-300 rounded-2xl border border-base-200 px-3 py-1.5 mt-4 sm:mt-6 text-left transition-all hover:border-primary/40 hover:bg-base-200">
+                    class="w-full flex items-center gap-3 bg-base-300 rounded-2xl border border-base-200 px-3 py-2.5 mt-4 sm:mt-6 text-left transition-all hover:border-primary/40 hover:bg-base-200">
                     <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
                     <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, harnesses, tools, commands…</span>
                     <span class="text-[10px] font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-md px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">⌘K</span>
@@ -189,7 +185,7 @@
                   </div>
 
                   <!-- API Connection -->
-                  <div class="w-full mt-4 sm:mt-6 rounded-2xl border border-dashed bg-base-300 px-3 py-1.5 transition-all flex items-center gap-3"
+                  <div class="w-full mt-4 sm:mt-6 rounded-2xl border border-dashed bg-base-300 px-3 py-2.5 transition-all flex items-center gap-3"
                     :class="apiStatus === 'connected' ? 'border-success/30' : apiStatus === 'disconnected' ? 'border-error/30' : 'border-primary/30'">
                     <button @click="checkApiConnection()" :disabled="apiChecking"
                       class="flex-1 min-w-0 flex items-center gap-3 text-left transition-all"
@@ -3204,6 +3200,6 @@
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-lg text-xs shadow-lg border hidden" role="status"></div>
 
-<script type="module" src="/assets/index-hadd1nnm.js"></script>
+<script type="module" src="./assets/index-hadd1nnm.js"></script>
 </body>
 </html>
