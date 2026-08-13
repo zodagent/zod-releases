@@ -8,7 +8,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-cdac4c67.css" />
+  <link rel="stylesheet" href="./assets/index-639daee4.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -1513,8 +1513,8 @@
                 </div>
                 <div class="step-editor relative">
                   <div class="mention-mirror absolute inset-0 z-0 pointer-events-none whitespace-pre-wrap break-words text-sm leading-relaxed font-mono text-base-content/50 overflow-hidden"
-                    x-effect="renderMirror($el, active?.system)"></div>
-                  <textarea :value="active?.system || ''" @input="sysContentInput($el)" @scroll="syncMirror($el)" spellcheck="false"
+                    x-effect="sysMirrorEffect($el)"></div>
+                  <textarea @input="sysContentInput($el)" @scroll="syncMirror($el)" spellcheck="false"
                     x-effect="sysContentEffect($el)"
                     class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-sm leading-relaxed outline-none resize-none overflow-hidden font-mono border-0 bg-transparent outline-none"
                     rows="3"
@@ -2638,7 +2638,7 @@
     <!-- Header -->
     <div class="shrink-0 border-b border-base-content/10 bg-panel">
       <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-        <button @click="closeSeparate()"
+        <button @click="closeSeparate"
           class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
           title="Back (Esc)">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
@@ -2648,13 +2648,13 @@
         <i data-lucide="palette" class="size-4 shrink-0 text-base-content/60"></i>
         <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
           <span class="truncate min-w-0 text-sm font-medium text-base-content">Themes</span>
-          <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Browse, select &amp; customize color themes</span>
+          <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Browse, select & customize color themes</span>
         </div>
         <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
       </div>
     </div>
 
-    <!-- Toolbar: search + create -->
+    <!-- Toolbar: search + create theme -->
     <div class="shrink-0 px-3 sm:px-3 py-2 border-b border-base-content/5 bg-panel">
       <div class="flex items-center gap-2">
         <div class="flex items-center gap-1.5 flex-1 min-w-0 bg-base-300/50 px-2.5 py-1.5 rounded-box">
@@ -2665,7 +2665,7 @@
             <i data-lucide="x" class="w-3 h-3"></i>
           </span>
         </div>
-        <button @click="createNew()"
+        <button @click="createNew"
           class="inline-flex items-center gap-1 text-xs font-medium text-primary/70 hover:text-primary transition-colors shrink-0 whitespace-nowrap px-2 py-1.5 hover:bg-primary/5 rounded-selector">
           <i data-lucide="plus" class="w-3 h-3"></i>
           <span class="hidden sm:inline">New</span>
@@ -2691,74 +2691,54 @@
       </div>
     </div>
 
-    <!-- Theme list -->
+    <!-- Theme area: presets + custom -->
     <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-3 sm:px-3 py-3">
-      <div class="space-y-3">
+      <div class="space-y-6">
 
-        <!-- Theme editor (inline, opens when editing a custom theme) -->
-        <template x-if="editingTheme">
-          <div class="border border-base-content/10 bg-base-300/20 p-3 sm:p-3 rounded-box">
+        <!-- Preset themes grid -->
+        <template x-if="builtinThemes.length">
+          <div class="border-b border-base-content/10 pb-3 mb-4">
             <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-2 min-w-0">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4 text-primary shrink-0"></i>
-                <span class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Edit theme</span>
-                <span class="text-xs font-medium text-primary truncate" x-text="editorName()"></span>
+              <div class="flex items-center gap-2">
+                <i data-lucide="palette" class="w-3.5 h-3.5 text-base-content/60 shrink-0"></i>
+                <span class="text-xs font-semibold uppercase tracking-wider text-base-content/30">Built-in Presets</span>
               </div>
-              <div class="flex items-center gap-1 shrink-0">
-                <button @click="saveEdit()" class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-field hover:bg-primary/10">
-                  <i data-lucide="check" class="w-3 h-3"></i>Save
-                </button>
-                <button @click="cancelEdit()" class="inline-flex items-center gap-1 text-xs font-medium text-base-content/50 hover:text-base-content transition-colors px-2 py-1 rounded-field hover:bg-base-content/5">
-                  Cancel
-                </button>
-              </div>
+              <span class="text-xs text-base-content/40 capitalize" x-text="builtinCount()"></span>
             </div>
-
-            <!-- Name + live preview -->
-            <div class="flex items-center gap-2 mb-3">
-              <div class="relative flex-1">
-                <input x-model="editForm.name" type="text"
-                  class="w-full bg-base-300/40 px-2.5 py-1.5 text-xs text-base-content border border-base-content/10 focus:border-primary/40 outline-none rounded-field border-0 bg-transparent outline-none" />
-              </div>
-              <div class="flex rounded-field overflow-hidden border border-base-content/10 h-6 shrink-0" :data-theme="editForm.id"
-                :style="'background: linear-gradient(90deg,' + editorSwatch() + ')'" title="Live preview">
-                <div class="flex-1 bg-primary"></div>
-                <div class="flex-1 bg-secondary"></div>
-                <div class="flex-1 bg-accent"></div>
-                <div class="flex-1 bg-neutral"></div>
-                <div class="flex-1 bg-base-300"></div>
-              </div>
-            </div>
-
-            <!-- Color tokens -->
-            <template x-for="(sec, si) in tokenSections" :key="si">
-              <div class="mb-2">
-                <div class="text-xs font-semibold uppercase tracking-wider text-base-content/30 mb-1.5" x-text="sec.label"></div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                  <template x-for="(token, ti) in sec.tokens" :key="ti">
-                    <div class="bg-base-300/30 p-1.5 flex items-center gap-1.5 border border-base-content/5 rounded-box">
-                      <input type="color" :value="editorColor(token)" @input="updateColor(token, $event.target.value)"
-                        class="w-8 h-8 rounded-field border border-base-content/15 bg-transparent cursor-pointer shrink-0 border-0 bg-transparent outline-none" />
-                      <div class="min-w-0 flex-1">
-                        <div class="text-xs font-medium text-base-content/60 truncate" x-text="tokenLabel(token)"></div>
-                        <input type="text" :value="editorColor(token)" @input="updateColor(token, $event.target.value)"
-                          class="w-full bg-transparent text-xs font-mono text-base-content/40 outline-none border-0 bg-transparent outline-none" spellcheck="false" />
-                      </div>
-                    </div>
-                  </template>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+              <template x-for="id in builtinList()" :key="id">
+                <div class="flex flex-col items-center rounded-box border transition-colors hover:border-primary/30 hover:bg-primary/5 cursor-pointer"
+                  @click="selectTheme(id)"
+                  :class="activeTheme === id ? 'border-primary/30 bg-primary/5' : ''">
+                  <div class="w-12 h-12 rounded-md flex items-center justify-center mb-1" :style="'background: linear-gradient(135deg,' + themeSwatch(id) + ')'">
+                    <span class="text-xs capitalize" x-text="id"></span>
+                  </div>
+                  <span class="text-xs text-base-content/80 capitalize truncate" x-text="id"></span>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
           </div>
         </template>
 
         <!-- Custom themes section -->
         <template x-if="customThemes.length">
-          <div>
-            <div class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-2 flex items-center gap-2">
-              <i data-lucide="sparkles" class="w-3 h-3"></i>
-              Custom
-              <span class="font-mono text-base-content/25" x-text="customThemes.length"></span>
+          <div class="border-b border-base-content/10 pb-3 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-primary shrink-0"></i>
+                <span class="text-xs font-semibold uppercase tracking-wider text-base-content/30">Custom</span>
+                <span class="font-mono text-base-content/25" x-text="customThemes.length"></span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button @click="importThemes"
+                  class="text-xs text-primary/70 hover:text-primary transition-colors rounded-selector px-2 py-0.5">
+                  <i data-lucide="download" class="w-3 h-3"></i> Import
+                </button>
+                <button @click="exportThemes"
+                  class="text-xs text-primary/70 hover:text-primary transition-colors rounded-selector px-2 py-0.5">
+                  <i data-lucide="upload" class="w-3 h-3"></i> Export
+                </button>
+              </div>
             </div>
             <div class="space-y-1">
               <template x-for="id in customList()" :key="id">
@@ -2774,7 +2754,6 @@
                     </div>
                     <span class="text-sm font-medium text-base-content truncate" x-text="displayName(id)"></span>
                   </button>
-                  <i x-show="activeTheme === id" data-lucide="check" class="w-4 h-4 text-primary shrink-0"></i>
                   <div class="flex items-center gap-0.5 shrink-0">
                     <button @click="editCustom(id)" title="Edit"
                       class="min-h-7 min-w-7 flex items-center justify-center text-base-content/40 hover:text-primary hover:bg-primary/10 transition-colors rounded-selector">
@@ -2795,37 +2774,6 @@
           </div>
         </template>
 
-        <!-- Built-in themes section -->
-        <div>
-          <div class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-2 flex items-center gap-2">
-            <i data-lucide="layers" class="w-3 h-3"></i>
-            Built-in
-            <span class="font-mono text-base-content/25" x-text="builtinCount()"></span>
-          </div>
-          <div class="space-y-1">
-            <template x-for="id in builtinList()" :key="id">
-              <div class="flex items-center gap-2 border transition-colors px-2 py-1.5 group rounded-box"
-                :class="activeTheme === id ? 'border-primary/30 bg-primary/5' : 'border-base-content/10'">
-                <button @click="selectTheme(id)" class="flex items-center gap-2.5 flex-1 min-w-0 text-left">
-                  <div class="flex rounded-field overflow-hidden border border-base-content/10 h-5 w-14 shrink-0" :data-theme="id">
-                    <div class="flex-1 bg-primary"></div>
-                    <div class="flex-1 bg-secondary"></div>
-                    <div class="flex-1 bg-accent"></div>
-                    <div class="flex-1 bg-neutral"></div>
-                    <div class="flex-1 bg-base-300"></div>
-                  </div>
-                  <span class="text-sm font-medium text-base-content/80 capitalize truncate group-hover:text-base-content transition-colors" x-text="id"></span>
-                </button>
-                <i x-show="activeTheme === id" data-lucide="check" class="w-4 h-4 text-primary shrink-0"></i>
-                <button @click="startEdit(id)" title="Edit as custom"
-                  class="min-h-7 min-w-7 flex items-center justify-center text-base-content/25 hover:text-primary hover:bg-primary/10 transition-colors shrink-0 rounded-selector">
-                  <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </template>
-          </div>
-        </div>
-
         <!-- Empty state -->
         <div x-show="!filteredThemes.length" class="empty-state">
           <span class="empty-icon"><i data-lucide="palette" class="w-5 h-5"></i></span>
@@ -2835,7 +2783,78 @@
 
       </div>
     </div>
+
   </div>
+
+  <!-- Theme Editor Modal -->
+  <template x-if="editingTheme">
+    <div class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-2"
+      @click="cancelEdit"
+      x-show="editingTheme"
+      x-transition>
+      <div class="bg-base-100 w-full max-w-2xl mx-4 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        @click.event="stop">
+        
+        <!-- Editor Header -->
+        <div class="p-4 border-b border-base-content/10">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-primary shrink-0"></i>
+              <span class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Edit theme</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button @click="saveEdit()" class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-field hover:bg-primary/10">
+                <i data-lucide="check" class="w-3 h-3"></i>Save
+              </button>
+              <button @click="cancelEdit()" class="inline-flex items-center gap-1 text-xs font-medium text-base-content/50 hover:text-base-content transition-colors px-2 py-1 rounded-field hover:bg-base-content/5">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Name + Live Preview -->
+        <div class="p-3">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="relative flex-1">
+              <input x-model="editForm.name" type="text"
+                class="w-full bg-base-300/40 px-2.5 py-1.5 text-xs text-base-content border border-base-content/10 focus:border-primary/40 outline-none rounded-field bg-transparent outline-none" />
+            </div>
+            <div class="flex rounded-field overflow-hidden border border-base-content/10 h-6 shrink-0" :data-theme="editForm.id"
+              :style="'background: linear-gradient(90deg,' + editorSwatch() + ')'"
+              title="Live preview">
+              <div class="flex-1 bg-primary"></div>
+              <div class="flex-1 bg-secondary"></div>
+              <div class="flex-1 bg-accent"></div>
+              <div class="flex-1 bg-neutral"></div>
+              <div class="flex-1 bg-base-300"></div>
+            </div>
+          </div>
+
+          <!-- Color tokens grid -->
+          <template x-for="(sec, si) in tokenSections" :key="si">
+            <div class="mb-3">
+              <div class="text-xs font-semibold uppercase tracking-wider text-base-content/30 mb-1.5" x-text="sec.label"></div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                <template x-for="(token, ti) in sec.tokens" :key="ti">
+                  <div class="bg-base-300/30 p-1.5 flex items-center gap-1.5 border border-base-content/5 rounded-box">
+                    <input type="color" :value="editorColor(token)" @input="updateColor(token, $event.target.value)"
+                      class="w-8 h-8 rounded-field border border-base-content/15 bg-transparent cursor-pointer shrink-0 border-0 bg-transparent outline-none" />
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-medium text-base-content/60 truncate" x-text="tokenLabel(token)"></div>
+                      <input type="text" :value="editorColor(token)" @input="updateColor(token, $event.target.value)"
+                        class="w-full bg-transparent text-xs font-mono text-base-content/40 outline-none border-0 bg-transparent outline-none" spellcheck="false" />
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+
+      </div>
+    </div>
+  </template>
                 </div>
               </div>
             </div>
@@ -3183,6 +3202,6 @@
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-m36j04x0.js"></script>
+<script type="module" src="./assets/index-w3sxrd59.js"></script>
 </body>
 </html>
