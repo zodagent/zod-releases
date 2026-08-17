@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" x-data data-theme="abyss" :data-theme="$store.settings.theme">
 <head>
+  <base href="/zod-releases/">
     <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0a0e1a" />
@@ -2502,7 +2503,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     <i data-lucide="image-off" class="w-4 h-4 text-base-content mb-1"></i>
                     <span class="text-xs text-base-content font-medium">None</span>
                   </div>
-                  <img x-show="wp.id !== ''" :src="$store.settings.wpSrc(wp)" loading="lazy" class="w-full h-full object-cover" alt="" />
+                  <img x-show="wp.id !== ''" :src="$store.settings.wpSrc(wp)" loading="lazy" @error="$el.closest('button').remove()" class="w-full h-full object-cover" alt="" />
                   <div x-show="$store.settings.wallpaper === wp.id" class="absolute top-1.5 left-1.5">
                     <div class="w-4 h-4 rounded-full bg-primary flex items-center justify-center">
                       <i data-lucide="check" class="w-2.5 h-2.5 text-primary-content"></i>
@@ -2720,7 +2721,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     <input type="text" x-model="p.baseUrl" @input="provFormCommit()" placeholder="https://api.example.com/v1"
                       class="w-full bg-transparent text-xs text-base-content/50 outline-none placeholder:text-base-content/20 truncate border-0" />
                     <div class="flex items-center gap-1 mt-0.5">
-                      <input :type="provShowKey[p.id] ? 'text' : 'password'" x-model="p.apiKey" @input="provFormCommit()" placeholder="sk-… API key"
+                      <input name="api_key" :type="provShowKey[p.id] ? 'text' : 'password'" autocomplete="off" x-model="p.apiKey" @input="provFormCommit()" placeholder="sk-… API key"
                         class="flex-1 min-w-0 bg-transparent text-xs font-mono text-base-content/50 outline-none placeholder:text-base-content/20 border-0" />
                       <button type="button" @click="provToggleKey(p.id)" :title="provShowKey[p.id] ? 'Hide' : 'Show'"
                         class="min-h-6 min-w-6 flex items-center justify-center rounded-field text-base-content/40 hover:text-primary transition-colors shrink-0">
@@ -4363,6 +4364,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
     </button>
   </div>
 
-<script type="module" src="./assets/index-dmtmht12.js"></script>
+<script type="module" src="./assets/index-hzqjx4vg.js"></script>
 </body>
 </html>
