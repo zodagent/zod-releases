@@ -223,8 +223,11 @@
                       :disabled="apiChecking"
                       :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
                       :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')"
-                      class="inline-flex items-center gap-1.5 rounded-md border border-base-content/15 bg-base-200 px-2 py-1 font-mono text-xs transition-colors hover:bg-base-content/10 shrink-0">
-                      <span class="w-1.5 h-1.5 rounded-full" :class="apiStatusBadge"></span>
+                      class="flex items-center gap-1.5 text-xs font-mono truncate transition-colors hover:opacity-80 shrink-0">
+                      <i data-lucide="check" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'connected'"></i>
+                      <i data-lucide="x" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'disconnected'"></i>
+                      <i data-lucide="key" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'no-key'"></i>
+                      <span class="braille-loader shrink-0" x-show="apiStatus === 'checking'"></span>
                       <span class="truncate max-w-[10rem]" x-text="apiStatusDetail"
                         :class="apiStatus === 'no-key' ? 'text-base-content/40' : ''"></span>
                     </a>
