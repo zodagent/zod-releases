@@ -224,10 +224,11 @@
 
                 <!-- Expanded -->
                   <div x-show="hubCardOpen" x-cloak @click.outside="hubCardOpen = false" class="space-y-0">
-                  <!-- Top row: logo (collapse) · small API status + chevron (right) -->
+                  <!-- Top row: logo + greeting (left) · API status + time (right) -->
                   <div class="flex items-center justify-between gap-3 px-2 sm:px-3 pt-5 sm:pt-3">
-                    <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
-                      <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity shrink-0" style="line-height:0">
+                        <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
     <g>
       <g transform="matrix(0.47687, 0, 0, 0.47687, 413.827301, 109.812431)">
@@ -242,9 +243,12 @@
   </g>
 </svg>
 
-                    </button>
-                    <div class="flex items-center gap-2">
-                      <!-- Small API status -->
+                      </button>
+                      <h1 class="text-2xl sm:text-4xl font-medium text-primary leading-tight truncate">
+                        <span>Good </span><span>there.</span>
+                      </h1>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
                       <a @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
                         :disabled="apiChecking"
                         :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
@@ -257,18 +261,11 @@
                         <span class="truncate max-w-[14rem]" x-text="apiStatusDetail"
                           :class="apiStatus === 'no-key' ? 'text-base-content/30' : ''"></span>
                       </a>
+                      <span class="text-xs font-mono text-base-content/40 tabular-nums" x-text="now"></span>
                     </div>
                   </div>
-                  <!-- Greeting + time -->
-                  <div class="mb-4 px-2 sm:px-3">
-                    <div class="flex items-start justify-between gap-4">
-                      <h1 class="text-2xl sm:text-4xl font-medium text-primary leading-tight">
-                        <span>Good </span><span>there.</span>
-                      </h1>
-                      <span class="text-xs font-mono text-base-content/40 shrink-0 tabular-nums" x-text="now"></span>
-                    </div>
-                    <p class="mt-1 text-xs sm:text-sm font-mono text-base-content/40 leading-snug"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
-                  </div>
+                  <!-- Subtitle -->
+                  <p class="mt-1 px-2 sm:px-3 text-xs sm:text-sm font-mono text-base-content/40 leading-snug"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
 
                   <!-- Search Bar -->
                   <a @click="sidebarOpen = true"
