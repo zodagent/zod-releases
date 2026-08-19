@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-b73e78c5.css" />
+  <link rel="stylesheet" href="./assets/index-1846a64c.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -197,20 +197,9 @@
               <!-- Welcome card -->
               <div class="border border-base-content/10 rounded-box bg-base-200">
                 <div class="space-y-0">
-                  <!-- Top row: small API status (right) -->
-                  <div class="flex items-center justify-end gap-2 px-2 sm:px-3 pt-5 sm:pt-3">
-                    <a @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
-                      :disabled="apiChecking"
-                      :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
-                      :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')"
-                      class="flex items-center gap-1.5 text-xs font-mono truncate transition-colors hover:opacity-80">
-                      <i data-lucide="check" class="w-3 h-3 shrink-0" x-show="apiStatus === 'connected'"></i>
-                      <i data-lucide="x" class="w-3 h-3 shrink-0" x-show="apiStatus === 'disconnected'"></i>
-                      <i data-lucide="key" class="w-3 h-3 shrink-0" x-show="apiStatus === 'no-key'"></i>
-                      <span class="braille-loader shrink-0" x-show="apiStatus === 'checking'"></span>
-                      <span class="truncate max-w-[14rem]" x-text="apiStatusDetail"
-                        :class="apiStatus === 'no-key' ? 'text-base-content/30' : ''"></span>
-                    </a>
+                  <!-- Time -->
+                  <div class="flex items-center justify-end px-2 sm:px-3 pt-5 sm:pt-3">
+                    <span class="text-xs font-mono text-base-content/40 shrink-0 tabular-nums" x-text="now"></span>
                   </div>
 
                   <!-- Search Bar -->
