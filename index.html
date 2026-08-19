@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-e76d1e7f.css" />
+  <link rel="stylesheet" href="./assets/index-15503863.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -2528,7 +2528,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
               </summary>
               <div class="px-3 sm:px-4 pt-1 pb-2">
                 <p class="text-xs text-base-content/30 mb-2">Control how solid or frosted the app surfaces appear.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+                <div class="flex flex-col gap-1">
                   <div class="flex items-center gap-3 py-2">
                     <i data-lucide="panel-left" class="w-3.5 h-3.5 text-base-content shrink-0"></i>
                     <span class="text-xs text-base-content flex-1">Background opacity</span>
@@ -3375,7 +3375,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     <div class="space-y-2">
                       <div x-show="hasPresetGroup('once')">
                         <div class="text-xs font-medium uppercase tracking-wider text-base-content/30 mb-1">Once</div>
-                        <div class="grid grid-cols-2 gap-1.5">
+                        <div class="grid grid-cols-1 gap-1.5">
                           <template x-for="p in presetsOf('once')" :key="p.key">
                             <button @click="applyPreset(p.key)"
                               class="flex items-center gap-1.5 min-h-9 px-2.5 border text-xs font-medium transition-colors rounded-selector"
@@ -3388,7 +3388,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                       </div>
                       <div x-show="hasPresetGroup('repeat')">
                         <div class="text-xs font-medium uppercase tracking-wider text-base-content/30 mb-1">Repeat</div>
-                        <div class="grid grid-cols-2 gap-1.5">
+                        <div class="grid grid-cols-1 gap-1.5">
                           <template x-for="p in presetsOf('repeat')" :key="p.key">
                             <button @click="applyPreset(p.key)"
                               class="flex items-center gap-1.5 min-h-9 px-2.5 border text-xs font-medium transition-colors rounded-selector"
@@ -3584,7 +3584,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     <div class="text-xs text-base-content/40 font-mono px-3 sm:px-4 pb-2.5 -mt-0.5" x-text="separateCronSummary(separateCron)"></div>
                   </div>
                   <div class="px-3 sm:px-4 py-3">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+                  <div class="flex flex-col gap-3 mt-1">
                     <div class="border border-base-content/10 p-3 bg-base-300/60 rounded-box">
                       <div class="text-xs uppercase tracking-wider text-base-content/30 mb-1">Next run</div>
                       <div class="text-sm text-base-content/80" x-text="separateCronNext(separateCron)"></div>
@@ -3655,7 +3655,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
   </div>
 
   <!-- Path + method -->
-  <div class="grid grid-cols-[1fr_auto] gap-2">
+  <div class="flex flex-col gap-3">
     <div>
       <label class="block text-xs font-medium text-base-content/50 mb-1">Path</label>
       <div class="flex items-center bg-base-300 border border-base-content/10 rounded-field focus-within:border-primary/40 transition-colors">
