@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-33f93bca.css" />
+  <link rel="stylesheet" href="./assets/index-ecda3cef.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -316,10 +316,9 @@
                       <span class="text-xs text-base-content/25 font-mono tabular-nums" x-text="hubPrompt.length + '/4000'"></span>
                     </div>
                     <button @click="sendHubPrompt()" :disabled="!hubPrompt.trim()"
-                      class="btn btn-sm"
-                      :class="hubPrompt.trim() ? 'btn-primary' : 'btn-disabled'"
+                      class="flex items-center justify-center w-8 h-8 rounded-full text-primary transition-colors hover:bg-base-content/5 disabled:opacity-30"
                       aria-label="Send message">
-                      <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
                     </button>
                   </div>
                 </div>
