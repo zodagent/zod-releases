@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-c78ecc74.css" />
+  <link rel="stylesheet" href="./assets/index-37bd33bd.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -354,7 +354,7 @@
                 <input x-model="searchQuery" @input="performSearch()" @keydown.enter.prevent="nextSearchMatch()" @keydown.escape="toggleSearch()"
                   @focus="searchOpen = true" @blur="if (!searchQuery) searchOpen = false"
                   type="text" placeholder="Search..."
-                  class="w-32 focus:w-52 bg-base-content/5 border border-base-content/10 text-xs text-base-content outline-none placeholder-base-content/30 rounded-selector pl-7 pr-2 py-1.5 transition-all duration-200">
+                  class="w-24 focus:w-40 sm:w-32 sm:focus:w-52 bg-base-content/5 border border-base-content/10 text-xs text-base-content outline-none placeholder-base-content/30 rounded-selector pl-7 pr-2 py-1.5 transition-all duration-200">
                 <template x-if="searchQuery">
                   <div class="absolute right-1 flex items-center gap-0.5">
                     <span class="text-[0.6rem] font-mono text-base-content/30 tabular-nums mr-0.5" x-text="searchMatches.length ? (searchIndex + 1) + '/' + searchMatches.length : '0'"></span>
@@ -365,7 +365,7 @@
               </div>
               <div class="relative" x-data="{ menuOpen: false }">
               <button @click="menuOpen = !menuOpen" title="Menu" class="min-h-9 min-w-9 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector">
-                <i data-lucide="ellipsis-vertical" class="w-4.5 h-4.5"></i>
+                <i data-lucide="ellipsis-vertical" class="w-5 h-5"></i>
               </button>
               <div x-show="menuOpen" @click.outside="menuOpen = false" x-cloak
                 x-transition:enter="transition ease-out duration-100"
@@ -1455,7 +1455,7 @@
           </div>
         </div>
         <!-- ═══ COMPOSER (inside bg-panel) ═══ -->
-        <div x-show="chatActive" class="shrink-0">
+        <div x-show="chatActive" class="shrink-0 safe-bottom">
           <div class="w-full composer-shell relative overflow-visible">
             <!-- @mention / /command dropdown (full composer width) -->
             <div x-show="activePanel === 'mentions' || activePanel === 'commands'" x-cloak
