@@ -226,16 +226,15 @@
                   </div>
                 </div>
                 <p class="text-xs sm:text-sm font-mono text-base-content/40 leading-none w-fit"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
+
+                <!-- Search Bar -->
+                <button @click="sidebarOpen = true"
+                  class="w-full flex items-center gap-3 bg-base-300 border border-base-content/10 px-3 py-2.5 mt-4 text-left transition-all hover:border-base-content/20 rounded-selector">
+                  <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
+                  <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
+                  <span class="text-xs font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
+                </button>
               </div>
-
-
-              <!-- Search Bar -->
-              <button @click="sidebarOpen = true"
-                class="w-full flex items-center gap-3 bg-base-200 border border-base-content/10 px-3 py-2.5 mt-3 sm:mt-4 text-left transition-all hover:border-base-content/20 rounded-selector">
-                <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
-                <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
-                <span class="text-xs font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
-              </button>
 
               <!-- Running sessions indicator -->
               <template x-if="showRunningSession">
