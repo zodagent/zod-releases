@@ -195,8 +195,8 @@
             <div class="w-full max-w-lg">
               <!-- Welcome card -->
               <div class="border border-base-content/10 rounded-box bg-base-200 p-5 sm:p-6 space-y-5">
-                <!-- Top-left: logo + small API status -->
-                <div class="flex items-center gap-3">
+                <!-- Top row: logo (left) · small API status (right, button-like) -->
+                <div class="flex items-center justify-between gap-3">
                   <button @click="goToHub()" title="Go to hub" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
                     <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
@@ -217,7 +217,7 @@
                   <!-- Small API status -->
                   <button @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
                     :disabled="apiChecking"
-                    class="flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors hover:bg-base-content/5"
+                    class="flex items-center gap-1.5 rounded-full border border-base-content/10 px-2.5 py-1 transition-colors hover:bg-base-content/5"
                     :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
                     :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')">
                     <span class="badge badge-sm badge-glass shrink-0 leading-none px-0 flex items-center justify-center w-3.5 h-3.5 rounded-full" :class="apiStatusBadge">
