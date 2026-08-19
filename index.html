@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-a8ff189e.css" />
+  <link rel="stylesheet" href="./assets/index-cfb58f41.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -220,11 +220,10 @@
                     @click="hubCardOpen = true" @focus="hubCardOpen = true"
                     placeholder="Ask anything, or select a session to continue."
                     class="flex-1 min-w-0 cursor-pointer bg-transparent text-sm font-mono text-base-content/40 outline-none placeholder-base-content/30" />
-                  <svg class="w-4 h-4 text-base-content/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
 
                 <!-- Expanded -->
-                <div x-show="hubCardOpen" x-cloak class="space-y-0">
+                  <div x-show="hubCardOpen" x-cloak @click.outside="hubCardOpen = false" class="space-y-0">
                   <!-- Top row: logo (collapse) · small API status + chevron (right) -->
                   <div class="flex items-center justify-between gap-3 px-2 sm:px-3 pt-5 sm:pt-3">
                     <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
@@ -246,23 +245,15 @@
                     </button>
                     <div class="flex items-center gap-2">
                       <!-- Small API status -->
-                      <button @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
+                      <a @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
                         :disabled="apiChecking"
-                        class="flex items-center gap-1.5 rounded-full border border-base-content/10 px-2.5 py-1 transition-colors hover:bg-base-content/5"
                         :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
-                        :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')">
-                        <span class="badge badge-sm badge-glass shrink-0 leading-none px-0 flex items-center justify-center w-3.5 h-3.5 rounded-full" :class="apiStatusBadge">
-                          <i data-lucide="check" class="w-2.5 h-2.5" x-show="apiStatus === 'connected'"></i>
-                          <i data-lucide="x" class="w-2.5 h-2.5" x-show="apiStatus === 'disconnected'"></i>
-                          <i data-lucide="key" class="w-2.5 h-2.5" x-show="apiStatus === 'no-key'"></i>
-                          <span class="braille-loader shrink-0" x-show="apiStatus === 'checking'"></span>
-                        </span>
-                        <span class="text-[11px] font-mono truncate max-w-[8rem]" x-text="apiStatusDetail"
+                        :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')"
+                        class="flex items-center gap-1.5 text-xs font-mono truncate transition-colors hover:opacity-80">
+                        <span class="shrink-0 w-1.5 h-1.5 rounded-full" :class="apiStatusBadge"></span>
+                        <span class="truncate max-w-[8rem]" x-text="apiStatusDetail"
                           :class="apiStatus === 'no-key' ? 'text-base-content/30' : ''"></span>
-                      </button>
-                      <button @click="hubCardOpen = false" title="Collapse" class="flex items-center justify-center w-7 h-7 rounded-full text-base-content/40 hover:bg-base-content/5 transition-colors">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                      </button>
+                      </a>
                     </div>
                   </div>
                   <!-- Greeting + time -->
@@ -278,7 +269,7 @@
 
                   <!-- Search Bar -->
                   <a @click="sidebarOpen = true"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-selector bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20">
                     <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
                     <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
                     <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
@@ -300,7 +291,7 @@
                   </template>
 
                   <!-- Prompt Input -->
-                  <div class="relative w-full rounded-selector bg-base-300 border-x-0 border-t-0 border-b border-base-content/10">
+                  <div class="relative w-full bg-base-300 border-x-0 border-t-0 border-b border-base-content/10">
                     <textarea x-model="hubPrompt"
                       @keydown.enter.prevent="sendHubPrompt"
                       @input="autoResize($el)"
