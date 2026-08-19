@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-6741c192.css" />
+  <link rel="stylesheet" href="./assets/index-4c5d1064.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -223,7 +223,7 @@
                 </div>
 
                 <!-- Expanded -->
-                <div x-show="hubCardOpen" x-cloak class="space-y-3">
+                <div x-show="hubCardOpen" x-cloak class="space-y-0">
                   <!-- Top row: logo (collapse) · small API status + chevron (right) -->
                   <div class="flex items-center justify-between gap-3">
                     <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
@@ -265,7 +265,7 @@
                     </div>
                   </div>
                   <!-- Greeting + time -->
-                  <div>
+                  <div class="mb-4">
                     <div class="flex items-start justify-between gap-4">
                       <h1 class="text-2xl sm:text-4xl font-medium text-primary leading-tight">
                         <span>Good </span><span>there.</span>
@@ -277,7 +277,7 @@
 
                   <!-- Search Bar -->
                   <button @click="sidebarOpen = true"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-box bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-box bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20 -mx-5 sm:-mx-6">
                     <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
                     <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
                     <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
@@ -285,7 +285,7 @@
 
                   <!-- Running sessions indicator -->
                   <template x-if="showRunningSession">
-                    <div class="flex items-center gap-2.5 px-1 py-2">
+                    <div class="flex items-center gap-2.5 px-1 py-2 mt-3">
                       <span class="shrink-0 text-primary"><span class="braille-loader"></span></span>
                       <div class="flex-1 min-w-0">
                         <div class="text-sm font-medium text-primary">Active session</div>
@@ -299,7 +299,7 @@
                   </template>
 
                   <!-- Prompt Input -->
-                  <div class="relative w-full rounded-box bg-base-300 border border-base-content/10">
+                  <div class="relative w-full rounded-box bg-base-300 border border-base-content/10 -mx-5 sm:-mx-6">
                     <textarea x-model="hubPrompt"
                       @keydown.enter.prevent="sendHubPrompt"
                       @input="autoResize($el)"
