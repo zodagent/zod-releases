@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-37bd33bd.css" />
+  <link rel="stylesheet" href="./assets/index-d00ae040.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -1548,87 +1548,81 @@
               </template>
             </div>
 
-            <!-- Input row -->
+            <!-- Input row (single ChatGPT-style bar) -->
             <div class="relative flex items-end gap-2 px-3 pb-2">
-              <!-- Full input field -->
-              <div class="composer-field flex-1 min-w-0 relative">
-                <!-- Textarea fills the field -->
+              <div class="composer-field flex-1 min-w-0 flex items-end gap-2 px-2 py-2" style="align-items:flex-end">
+                <!-- Agent chip -->
+                <div class="relative shrink-0">
+                  <button @click="chatAgentOpen = !chatAgentOpen"
+                    class="composer-agent"
+                    :title="selectedAgentId ? 'Running: ' + selectedAgentLabel : 'Select an agent'">
+                    <div x-show="!selectedAgentId" class="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center">
+                      <i data-lucide="bot" class="w-3 h-3 text-primary/70"></i>
+                    </div>
+                    <div x-show="selectedAgentId" class="w-5 h-5 rounded-full overflow-hidden">
+                      <img :src="$store.agents.getAgentAvatar(selectedAgentId, 20)" class="w-full h-full object-cover" />
+                    </div>
+                    <span class="max-w-[6rem] truncate" x-text="selectedAgentId ? selectedAgentLabel : 'Agent'"></span>
+                    <i data-lucide="chevron-down" class="w-3 h-3 text-base-content/30"></i>
+                  </button>
+                  <div x-show="chatAgentOpen" @click.outside="chatAgentOpen = false" x-cloak
+                    x-effect="chatAgentOpen && refreshIconsSoon()"
+                    class="absolute bottom-full left-0 mb-1 w-56 sm:w-64 max-h-72 overflow-y-auto scrollbar-thin bg-base-200 border border-base-content/10 z-50 py-1 rounded-box">
+                    <button @click="pickAgent('')"
+                      class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
+                      :class="!selectedAgentId ? 'bg-base-content/10' : ''">
+                      <i data-lucide="message-circle" class="w-3.5 h-3.5 text-base-content/40 shrink-0"></i>
+                      <span class="flex-1 truncate">No agent</span>
+                      <span class="text-xs font-mono text-base-content/30 shrink-0">chat</span>
+                    </button>
+                    <div class="my-1 mx-3 h-px bg-base-content/10"></div>
+                    <template x-for="h in agentOptions" :key="h.id">
+                      <button @click="pickAgent(h.id)"
+                        class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
+                        :class="selectedAgentId === h.id ? 'bg-base-content/10' : ''">
+                        <div class="w-6 h-6 rounded-full overflow-hidden shrink-0">
+                          <img :src="$store.agents.getAgentAvatar(h.id, 24)" :alt="h.name" class="w-full h-full object-cover" />
+                        </div>
+                        <span class="flex-1 truncate" x-text="h.name"></span>
+                        <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="h.steps + ' steps'"></span>
+                      </button>
+                    </template>
+                    <div class="my-1 mx-3 h-px bg-base-content/10"></div>
+                    <button @click="chatCloseManage()"
+                      class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5 text-base-content/60">
+                      <i data-lucide="settings" class="w-3.5 h-3.5 shrink-0"></i>
+                      <span class="flex-1 truncate">Manage agents...</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- Textarea -->
                 <textarea x-ref="textarea" x-model="chatInput"
                   @keydown.enter.prevent="chatOnEnter()"
                   @keydown.arrow-down.prevent="chatArrowDown()"
                   @keydown.arrow-up.prevent="chatArrowUp()"
                   @keydown.escape="chatEscape()"
                   @input="chatInputChanged($el)"
-                  placeholder="Enter to send"
-                  class="composer-input w-full bg-transparent outline-none resize-none border-0 px-3 py-3 min-h-[5rem] max-h-[50vh]"
+                  placeholder="Message..."
+                  class="composer-input flex-1 min-w-0 bg-transparent outline-none resize-none border-0 py-1.5 min-h-[1.5rem] max-h-[40vh]"
                   rows="1"></textarea>
-              </div>
-            </div>
-
-            <!-- Agent chip + context + send (below textarea) -->
-            <div class="flex items-center gap-2 px-3 pb-2">
-              <div class="relative shrink-0">
-                <button @click="chatAgentOpen = !chatAgentOpen"
-                  class="composer-agent"
-                  :title="selectedAgentId ? 'Running: ' + selectedAgentLabel : 'Select an agent'">
-                  <div x-show="!selectedAgentId" class="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center">
-                    <i data-lucide="bot" class="w-3 h-3 text-primary/70"></i>
+                <!-- Context (desktop) -->
+                <div x-show="contextPct > 0" class="hidden sm:flex items-center gap-1.5 shrink-0">
+                  <span class="text-[0.65rem] text-base-content/30">ctx</span>
+                  <div class="w-12 h-1.5 bg-base-content/8 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-300" :style="'width:' + contextPct + '%; background:' + contextColor"></div>
                   </div>
-                  <div x-show="selectedAgentId" class="w-5 h-5 rounded-full overflow-hidden">
-                    <img :src="$store.agents.getAgentAvatar(selectedAgentId, 20)" class="w-full h-full object-cover" />
-                  </div>
-                  <span class="max-w-[6rem] truncate" x-text="selectedAgentId ? selectedAgentLabel : 'Agent'"></span>
-                  <i data-lucide="chevron-down" class="w-3 h-3 text-base-content/30"></i>
+                  <span class="text-[0.65rem] font-mono text-base-content/30 tabular-nums" x-text="contextPct + '%'"></span>
+                </div>
+                <!-- Send / Stop -->
+                <button @click="aiWorking ? stopChat() : sendChat()"
+                  class="composer-send-mini shrink-0"
+                  :class="aiWorking ? 'stop' : (chatInput.trim().length > 0 || pendingFiles.length ? 'can-send' : '')"
+                  :disabled="!aiWorking && chatInput.trim().length === 0 && !pendingFiles.length"
+                  :title="aiWorking ? 'Stop generating' : 'Send'">
+                  <i data-lucide="square" x-show="aiWorking" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="arrow-up" x-show="!aiWorking" class="w-4 h-4"></i>
                 </button>
-                <div x-show="chatAgentOpen" @click.outside="chatAgentOpen = false" x-cloak
-                  x-effect="chatAgentOpen && refreshIconsSoon()"
-                  class="absolute bottom-full left-0 mb-1 w-56 sm:w-64 max-h-72 overflow-y-auto scrollbar-thin bg-base-200 border border-base-content/10 z-50 py-1 rounded-box">
-                  <button @click="pickAgent('')"
-                    class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
-                    :class="!selectedAgentId ? 'bg-base-content/10' : ''">
-                    <i data-lucide="message-circle" class="w-3.5 h-3.5 text-base-content/40 shrink-0"></i>
-                    <span class="flex-1 truncate">No agent</span>
-                    <span class="text-xs font-mono text-base-content/30 shrink-0">chat</span>
-                  </button>
-                  <div class="my-1 mx-3 h-px bg-base-content/10"></div>
-                  <template x-for="h in agentOptions" :key="h.id">
-                    <button @click="pickAgent(h.id)"
-                      class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
-                      :class="selectedAgentId === h.id ? 'bg-base-content/10' : ''">
-                      <div class="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                        <img :src="$store.agents.getAgentAvatar(h.id, 24)" :alt="h.name" class="w-full h-full object-cover" />
-                      </div>
-                      <span class="flex-1 truncate" x-text="h.name"></span>
-                      <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="h.steps + ' steps'"></span>
-                    </button>
-                  </template>
-                  <div class="my-1 mx-3 h-px bg-base-content/10"></div>
-                  <button @click="chatCloseManage()"
-                    class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5 text-base-content/60">
-                    <i data-lucide="settings" class="w-3.5 h-3.5 shrink-0"></i>
-                    <span class="flex-1 truncate">Manage agents...</span>
-                  </button>
-                </div>
               </div>
-              <!-- Context -->
-              <div x-show="contextPct > 0" class="flex items-center gap-1.5">
-                <span class="text-[0.65rem] text-base-content/30">ctx</span>
-                <div class="w-12 h-1.5 bg-base-content/8 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all duration-300" :style="'width:' + contextPct + '%; background:' + contextColor"></div>
-                </div>
-                <span class="text-[0.65rem] font-mono text-base-content/30 tabular-nums" x-text="contextPct + '%'"></span>
-              </div>
-              <!-- Spacer -->
-              <div class="flex-1"></div>
-              <!-- Send / Stop -->
-              <button @click="aiWorking ? stopChat() : sendChat()"
-                class="composer-send-mini"
-                :class="aiWorking ? 'stop' : (chatInput.trim().length > 0 || pendingFiles.length ? 'can-send' : '')"
-                :disabled="!aiWorking && chatInput.trim().length === 0 && !pendingFiles.length"
-                :title="aiWorking ? 'Stop generating' : 'Send'">
-                <i data-lucide="square" x-show="aiWorking" class="w-4 h-4 fill-current"></i>
-                <i data-lucide="arrow-up" x-show="!aiWorking" class="w-4 h-4"></i>
-              </button>
             </div>
 
             <!-- Status footer -->
