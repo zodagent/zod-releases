@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-8a992bac.css" />
+  <link rel="stylesheet" href="./assets/index-e76d1e7f.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -190,7 +190,7 @@
     <!-- ═══ MAIN CONTENT (shrinks when sidebar opens) ═══ -->
     <main class="main-panel bg-canvas">
       <!-- ═══ MAIN PANEL: Centered Greeting (when no chat active) ═══ -->
-      <div x-show="!chatActive && !separateView" class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin">
+      <div x-show="!chatActive" class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin">
         <div class="min-h-full flex flex-col items-center justify-center p-3 sm:p-4">
           <div class="w-full max-w-lg">
               <!-- Logo -->
@@ -349,7 +349,7 @@
         </div>
       </div>
 
-            <div x-show="chatActive && !separateView" class="flex-1 min-h-0 flex flex-col overflow-hidden"
+            <div x-show="chatActive" class="flex-1 min-h-0 flex flex-col overflow-hidden"
            @keydown.ctrl.f.prevent="toggleSearch()" @keydown.meta.f.prevent="toggleSearch()">
         <div class="w-full flex flex-col min-h-0 flex-1 bg-panel">
         <div x-show="showChatBack" x-cloak class="shrink-0 border-b border-base-content/10 bg-panel">
@@ -1491,7 +1491,7 @@
           </div>
         </div>
         <!-- ═══ COMPOSER (inside bg-panel) ═══ -->
-        <div x-show="chatActive && !separateView" class="shrink-0">
+        <div x-show="chatActive" class="shrink-0">
           <div class="w-full composer-shell relative overflow-visible">
             <!-- @mention / /command dropdown (full composer width) -->
             <div x-show="activePanel === 'mentions' || activePanel === 'commands'" x-cloak
@@ -1689,7 +1689,12 @@
 
       <!-- Composer moved into messages.html (inside bg-panel flex column) -->
 
-            <template x-if="separateView">
+    </main>
+
+    <!-- ═══ HUB PANEL (right side: settings + pages) ═══ -->
+    <aside class="hub-panel">
+      <div class="hub-inner">
+              <template x-if="separateView || $store.ui.settingsOpen">
         <div class="flex-1 min-h-0 flex flex-col relative">
 
           <!-- ═══ AGENT → full editor page ═══ -->
@@ -1698,11 +1703,10 @@
                 <div class="shrink-0 border-b border-base-content/10 bg-panel">
                   <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                     <button @click="goBack()"
-                      class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                      title="Back (Esc)">
-                      <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                      <span class="hidden sm:inline">Back</span>
-                    </button>
+                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                      title="Close">
+                      <i data-lucide="x" class="w-4 h-4"></i>
+                                          </button>
                     <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                     <i :data-lucide="separateView.icon || 'layers'" class="size-4 shrink-0 text-base-content/60"></i>
                     <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
@@ -2155,11 +2159,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <div class="shrink-0 border-b border-base-content/10 bg-panel">
             <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
               <button @click="goBack()"
-                class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                title="Back (Esc)">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Back</span>
-              </button>
+                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+                              </button>
               <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
               <i data-lucide="users" class="size-4 shrink-0 text-base-content/60"></i>
               <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
@@ -2225,11 +2228,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <div class="shrink-0 border-b border-base-content/10 bg-panel">
             <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
               <button @click="goBack()"
-                class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                title="Back (Esc)">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Back</span>
-              </button>
+                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+                              </button>
               <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
               <i data-lucide="radio" class="size-4 shrink-0 text-base-content/60"></i>
               <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
@@ -2284,11 +2286,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <div class="shrink-0 border-b border-base-content/10 bg-panel">
             <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
               <button @click="goBack()"
-                class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                title="Back (Esc)">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Back</span>
-              </button>
+                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+                              </button>
               <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
               <i :data-lucide="separateView.icon || 'layers'" class="size-4 shrink-0 text-base-content/60"></i>
               <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
@@ -2381,26 +2382,16 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
         </div>
       </template>
 
-          <!-- ═══ SETTINGS → full settings page ═══ -->
-      <template x-if="separateView && separateView.kind === 'settingsTab'">
+          <!-- ═══ SETTINGS → settings page (also opens via $store.ui.settingsOpen) ═══ -->
+      <template x-if="(separateView && separateView.kind === 'settingsTab') || $store.ui.settingsOpen">
           <div class="w-full  flex flex-col min-h-0 h-full bg-panel">
-                <div class="flex-1 min-h-0 flex flex-col"
-                  x-effect="openSettingsTabOnMount($el)">
+                <div class="flex-1 min-h-0 flex flex-col">
                     <!-- Settings view (full tab inside the search modal) -->
   <div x-show="$store.ui.settingsOpen" x-cloak x-data="preferencesPanel" class="h-full min-h-0 flex flex-col overflow-hidden">
     <style>.tab-scroll::-webkit-scrollbar{display:none}</style>
     <div class="flex-1 flex flex-col overflow-hidden" x-init="init()">
         <div class="shrink-0 z-10">
           <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5 border-b border-base-content/10 bg-panel">
-            <template x-if="$store.ui.separateMode">
-              <button @click="goBack()"
-                class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                title="Back">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Back</span>
-              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-            </template>
             <i :data-lucide="activeTabMeta.icon" class="size-4 shrink-0 text-base-content/60"></i>
             <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 max-w-48 sm:max-w-80 lg:max-w-md shrink-0">
               <span class="truncate min-w-0 text-sm font-medium text-base-content" x-text="activeTabMeta.title"></span>
@@ -2422,12 +2413,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                 </button>
               </div>
             </template>
-            <template x-if="!$store.ui.separateMode">
-              <button @click="$store.ui.settingsOpen = false" title="Close settings"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
-            </template>
+            <button @click="$store.ui.settingsOpen = false" title="Close settings"
+              class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
           </div>
 
         </div>
@@ -2437,7 +2426,25 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
         <div class="px-3 sm:px-4 pb-3 pt-2 safe-bottom">
 
           <!-- ═══ GENERAL ═══ -->
-          <div x-show="activeSettingsTab === 'general'" class="pb-4">
+           <div x-show="activeSettingsTab === 'general'" class="pb-4">
+
+            <!-- ═══ PAIRING & SYNC ═══ -->
+            <div class="pb-4">
+              <button @click="openTab('pairing')" class="w-full text-left hover:bg-base-content/5 -mx-3 sm:-mx-4 px-3 sm:px-4 py-1 rounded-selector transition-colors">
+                <div class="flex items-center gap-2.5 py-1.5">
+                  <span class="relative flex h-2 w-2 shrink-0">
+                    <span x-show="pairStatus.hub" class="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2" :class="pairStatus.hub ? 'bg-success' : 'bg-base-content/30'"></span>
+                  </span>
+                  <i data-lucide="link-2" class="w-4 h-4 shrink-0 text-base-content/40"></i>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm text-base-content truncate">Pair &amp; sync devices</div>
+                    <div class="text-xs text-base-content/50 truncate" x-text="pairStatus.hub ? 'Synced with ' + pairStatus.peers + ' device' + (pairStatus.peers === 1 ? '' : 's') : 'Not paired — connect devices'"></div>
+                  </div>
+                  <span class="text-xs font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0">open</span>
+                </div>
+              </button>
+            </div>
 
             <!-- ═══ PROVIDER ═══ -->
             <div class="text-xs font-semibold uppercase tracking-wider text-base-content/40 pt-3 pb-1 sticky top-0 z-10 bg-panel/95 backdrop-blur-sm -mx-3 sm:-mx-4 px-3 sm:px-4">Provider</div>
@@ -3564,11 +3571,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                   <div class="shrink-0 border-b border-base-content/10 bg-panel">
                     <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                       <button @click="goBack()"
-                        class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                        title="Back (Esc)">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Back</span>
-                      </button>
+                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                        title="Close">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                                              </button>
                       <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                       <i :data-lucide="separateView.icon" class="size-4 shrink-0 text-base-content/60"></i>
                       <div class="truncate text-sm font-medium text-base-content flex-1" x-text="separateCronTitle"></div>
@@ -3625,11 +3631,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 <div class="shrink-0 border-b border-base-content/10 bg-panel">
                     <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                       <button @click="goBack()"
-                        class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                        title="Back (Esc)">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Back</span>
-                      </button>
+                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                        title="Close">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                                              </button>
                       <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                       <i data-lucide="webhook" class="size-4 shrink-0 text-warning"></i>
                       <div class="truncate text-sm font-medium text-base-content flex-1" x-text="form.label || 'Webhook'"></div>
@@ -3722,7 +3727,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
   <div class="flex items-center gap-2 pt-1">
     <button type="button" @click="close()"
       class="inline-flex items-center gap-1.5 px-3 py-2 rounded-field text-sm font-medium text-base-content/70 hover:bg-base-content/5 transition-colors">
-      <i data-lucide="arrow-left" class="w-4 h-4"></i>Back
+      <i data-lucide="x" class="w-4 h-4"></i>Close
     </button>
     <div class="flex-1"></div>
     <button type="button" @click="remove()"
@@ -3755,10 +3760,9 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
     <div class="shrink-0 z-10">
       <div class="flex items-center gap-2 px-3 sm:px-3 py-2.5 border-b border-base-content/10 bg-panel">
         <button @click="goBack"
-          class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-          title="Back to search">
-          <i data-lucide="arrow-left" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">Back</span>
+          class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+          title="Close">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
         <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
         <i data-lucide="palette" class="size-4 shrink-0 text-base-content/60"></i>
@@ -3972,11 +3976,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                 <div class="shrink-0 border-b border-base-content/10 bg-panel">
                   <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                     <button @click="goBack()"
-                      class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                      title="Back (Esc)">
-                      <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                      <span class="hidden sm:inline">Back</span>
-                    </button>
+                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                      title="Close">
+                      <i data-lucide="x" class="w-4 h-4"></i>
+                                          </button>
                     <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                     <i data-lucide="route" class="size-4 shrink-0 text-accent"></i>
                     <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
@@ -4111,11 +4114,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                 <div class="shrink-0 border-b border-base-content/10 bg-panel">
                   <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                     <button @click="goBack()"
-                      class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                      title="Back (Esc)">
-                      <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                      <span class="hidden sm:inline">Back</span>
-                    </button>
+                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                      title="Close">
+                      <i data-lucide="x" class="w-4 h-4"></i>
+                                          </button>
                     <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                     <i data-lucide="gauge" class="size-4 shrink-0 text-success"></i>
                     <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
@@ -4342,11 +4344,10 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                   <div class="shrink-0 border-b border-base-content/10 bg-panel">
                     <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
                       <button @click="goBack()"
-                        class="flex items-center justify-center gap-1.5 text-xs font-medium text-base-content/60 hover:text-primary transition-colors shrink-0 px-1.5 py-1.5 hover:bg-base-content/5 rounded-selector"
-                        title="Back (Esc)">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Back</span>
-                      </button>
+                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                        title="Close">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                                              </button>
                       <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
                       <i data-lucide="keyboard" class="size-4 shrink-0 text-base-content/40"></i>
                       <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
@@ -4380,27 +4381,13 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
         </div>
       </template>
 
-    </main>
+      </div>
+    </aside>
 
   </div>
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-  <!-- Global pairing / sync status chip (visible on all views) -->
-  <div x-data="pairStatusChip" x-effect="refresh()" x-cloak
-    class="fixed top-14 sm:top-4 right-3 z-[55]">
-    <button @click="openSettingsTab('pairing')" :title="status.hub ? 'Synced with ' + status.peers + ' device(s) — open Pairing' : 'Not paired — open Pairing'"
-      class="flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 text-xs font-medium rounded-full border transition-all"
-      :class="status.hub ? 'bg-success/10 border-success/30 text-success hover:bg-success/20' : 'bg-base-200/90 border-base-content/10 text-base-content/50 hover:text-base-content/80 hover:border-base-content/30'">
-      <span class="relative flex h-2 w-2">
-        <span x-show="status.hub" class="absolute inline-flex h-full w-full rounded-full bg-success opacity-60 animate-ping"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2" :class="status.hub ? 'bg-success' : 'bg-base-content/30'"></span>
-      </span>
-      <i :data-lucide="status.hub ? 'link-2' : 'link-2-off'" class="w-3 h-3"></i>
-      <span x-text="status.hub ? status.peers + ' device' + (status.peers === 1 ? '' : 's') : 'Pair'"></span>
-    </button>
-  </div>
-
-<script type="module" src="./assets/index-vc9tt921.js"></script>
+<script type="module" src="./assets/index-ddjfj5jf.js"></script>
 </body>
 </html>
