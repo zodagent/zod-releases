@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-f8aec7cc.css" />
+  <link rel="stylesheet" href="./assets/index-a381d257.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -313,11 +313,11 @@
         </div>
       </div>
 
-            <div x-show="chatActive" class="flex-1 min-h-0 flex flex-col overflow-hidden max-w-3xl mx-auto w-full"
+            <div x-show="chatActive" class="flex-1 min-h-0 flex flex-col overflow-hidden"
            @keydown.ctrl.f.prevent="toggleSearch()" @keydown.meta.f.prevent="toggleSearch()">
         <div class="w-full flex flex-col min-h-0 flex-1 bg-panel">
-        <div x-show="showChatBack" x-cloak class="shrink-0 border-b border-base-content/10 bg-panel">
-          <div class="flex items-center gap-2 px-2 py-2">
+        <div x-show="showChatBack" x-cloak class="shrink-0 m-2 rounded-full border border-base-content/10 bg-panel">
+          <div class="flex items-center gap-2 px-3 py-2">
             <button @click="goBack()"
               class="min-h-9 min-w-9 flex items-center justify-center text-base-content/60 hover:text-primary transition-colors rounded-selector"
               title="Back (Esc)">
@@ -1456,7 +1456,7 @@
         </div>
         <!-- ═══ COMPOSER (inside bg-panel) ═══ -->
         <div x-show="chatActive" class="shrink-0 safe-bottom">
-          <div class="w-full composer-shell relative overflow-visible">
+          <div class="w-full max-w-3xl mx-auto composer-shell relative overflow-visible">
             <!-- @mention / /command dropdown (full composer width) -->
             <div x-show="activePanel === 'mentions' || activePanel === 'commands'" x-cloak
               class="absolute bottom-full left-0 right-0 mb-0 bg-base-200 border border-base-content/10 max-h-[280px] sm:max-h-[320px] overflow-hidden flex flex-col rounded-t-box z-[70]"
@@ -1550,7 +1550,7 @@
 
             <!-- Input row (single ChatGPT-style bar) -->
             <div class="relative flex items-end justify-center gap-2 px-4 pb-3 pt-1">
-              <div class="composer-field flex-1 min-w-0 max-w-3xl flex items-end gap-2 px-3 py-2" style="align-items:flex-end">
+              <div class="composer-field flex-1 min-w-0 flex items-end gap-2 px-3 py-2" style="align-items:flex-end">
                 <!-- Agent chip -->
                 <div class="relative shrink-0">
                   <button @click="chatAgentOpen = !chatAgentOpen"
