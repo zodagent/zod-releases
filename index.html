@@ -198,7 +198,7 @@
               <div class="border border-base-content/10 rounded-box bg-panel">
                 <div class="space-y-0">
                   <!-- Top bar: small logo + greeting (left) · kbd-style API status (right) -->
-                  <div class="flex items-center justify-between gap-2 px-3 py-3 rounded-t-box bg-base-300 border-x border-b border-base-content/10">
+                  <div class="flex items-center justify-between gap-2 px-3 py-3 rounded-t-box bg-panel border-x border-b border-base-content/10">
                     <div class="flex items-center gap-2 min-w-0">
                       <span class="inline-block h-6 w-[64px] text-primary logo-hub shrink-0" style="line-height:0">
                         <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -219,23 +219,12 @@
                       </span>
                       <span class="text-lg font-medium text-primary truncate">Good there.</span>
                     </div>
-                    <a @click="apiStatus === 'connected' ? checkApiConnection() : openSettingsTab('providers')"
-                      :disabled="apiChecking"
-                      :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'"
-                      :title="apiChecking ? 'Checking connection...' : (apiStatus === 'connected' ? 'Recheck connection' : 'Configure connection')"
-                      class="flex items-center gap-1.5 text-xs font-mono truncate transition-colors hover:opacity-80 shrink-0">
-                      <i data-lucide="check" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'connected'"></i>
-                      <i data-lucide="x" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'disconnected'"></i>
-                      <i data-lucide="key" class="w-3.5 h-3.5 shrink-0" x-show="apiStatus === 'no-key'"></i>
-                      <span class="braille-loader shrink-0" x-show="apiStatus === 'checking'"></span>
-                      <span class="truncate max-w-[10rem]" x-text="apiStatusDetail"
-                        :class="apiStatus === 'no-key' ? 'text-base-content/40' : ''"></span>
-                    </a>
+                    <span class="text-xs font-mono text-base-content/50 shrink-0 tabular-nums truncate" x-text="now"></span>
                   </div>
 
                   <!-- Search Bar -->
                   <a @click="sidebarOpen = true"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left bg-base-300 border-x border-b border-base-content/10 transition-colors hover:border-base-content/20">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left bg-panel border-x border-b border-base-content/10 transition-colors hover:border-base-content/20">
                     <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
                     <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
                     <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
@@ -257,7 +246,7 @@
                   </template>
 
                   <!-- Prompt Input -->
-                  <div class="relative w-full rounded-b-box bg-base-300 border-x-0 border-t-0 border-b border-base-content/10">
+                  <div class="relative w-full rounded-b-box bg-panel border-x-0 border-t-0 border-b border-base-content/10">
                     <textarea x-model="hubPrompt"
                       @keydown.enter.prevent="sendHubPrompt"
                       @input="autoResize($el)"
