@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-d601c9de.css" />
+  <link rel="stylesheet" href="./assets/index-6746f1bd.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -227,9 +227,6 @@
                 </div>
                 <p class="text-xs sm:text-sm font-mono text-base-content/40 leading-none w-fit"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
 
-                <!-- Divider -->
-                <div class="h-px bg-base-content/10 my-4"></div>
-
                 <!-- Search Bar -->
                 <button @click="sidebarOpen = true"
                   class="w-full flex items-center gap-3 px-1 py-2 text-left rounded-selector hover:bg-base-content/5 transition-colors">
@@ -240,7 +237,7 @@
 
                 <!-- Running sessions indicator -->
                 <template x-if="showRunningSession">
-                  <div class="mt-1 flex items-center gap-2.5 px-1 py-2 border-t border-base-content/10">
+                  <div class="mt-3 flex items-center gap-2.5 px-1 py-2">
                     <span class="shrink-0 text-primary"><span class="braille-loader"></span></span>
                     <div class="flex-1 min-w-0">
                       <div class="text-sm font-medium text-primary">Active session</div>
@@ -254,14 +251,14 @@
                 </template>
 
                 <!-- Prompt Input -->
-                <div class="relative w-full pt-3 border-t border-base-content/10">
+                <div class="relative w-full pt-4">
                   <textarea x-model="hubPrompt"
                     @keydown.enter.prevent="sendHubPrompt"
                     @input="autoResize($el)"
                     class="w-full bg-transparent text-sm text-base-content placeholder-base-content/30 outline-none resize-none min-h-12 leading-relaxed px-1 pb-2"
                     rows="2"
                     :placeholder="hubIsSearchMode ? 'Search the web with ' + searchProviderLabel + '...' : 'Ask ' + selectedAgentLabel + '...'"></textarea>
-                  <div class="flex items-center justify-between px-1 pb-1 pt-2 border-t border-base-content/10">
+                  <div class="flex items-center justify-between px-1 pb-1 pt-2">
                     <div class="flex items-center gap-2 min-w-0">
                       <!-- Agent selector -->
                       <div class="relative shrink-0">
@@ -316,7 +313,7 @@
                 </div>
 
                 <!-- API Connection -->
-                <div class="w-full flex items-center gap-3 px-1 py-2 mt-2 border-t border-base-content/10"
+                <div class="w-full flex items-center gap-3 px-1 py-2 mt-3"
                   :class="apiStatus === 'connected' ? 'text-success' : apiStatus === 'disconnected' ? 'text-error' : 'text-primary'">
                   <button @click="checkApiConnection()" :disabled="apiChecking"
                     class="flex-1 min-w-0 flex items-center gap-3 text-left transition-all"
