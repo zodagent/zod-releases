@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-15503863.css" />
+  <link rel="stylesheet" href="./assets/index-83aff301.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -192,11 +192,13 @@
       <!-- ═══ MAIN PANEL: Centered Greeting (when no chat active) ═══ -->
       <div x-show="!chatActive" class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin">
         <div class="min-h-full flex flex-col items-center justify-center p-3 sm:p-4">
-          <div class="w-full max-w-lg">
-              <!-- Logo -->
-              <div class="flex justify-start mb-2">
-                <button @click="goToHub()" title="Go to hub" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
-                  <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
+            <div class="w-full max-w-lg">
+              <!-- Welcome card -->
+              <div class="border border-base-content/10 rounded-box bg-base-200/50 p-4 sm:p-5 mb-3 sm:mb-4">
+                <!-- Logo -->
+                <div class="flex justify-start mb-3">
+                  <button @click="goToHub()" title="Go to hub" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
+                    <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
     <g>
       <g transform="matrix(0.47687, 0, 0, 0.47687, 413.827301, 109.812431)">
@@ -211,19 +213,21 @@
   </g>
 </svg>
 
-                </button>
-              </div>
-              <!-- Greeting -->
-              <div class="flex items-start justify-between mb-1">
-                <h1 class="text-2xl sm:text-4xl font-medium text-primary">
-                  <span>Good </span><span>there.</span>
-                </h1>
-                <div class="flex flex-col items-end gap-1 shrink-0">
-                  <span class="text-xs font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 tabular-nums leading-none"
-                    x-text="now"></span>
+                  </button>
                 </div>
+                <!-- Greeting -->
+                <div class="flex items-start justify-between mb-1.5">
+                  <h1 class="text-2xl sm:text-4xl font-medium text-primary">
+                    <span>Good </span><span>there.</span>
+                  </h1>
+                  <div class="flex flex-col items-end gap-1 shrink-0">
+                    <span class="text-xs font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 tabular-nums leading-none"
+                      x-text="now"></span>
+                  </div>
+                </div>
+                <p class="text-xs sm:text-sm font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 leading-none w-fit"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
               </div>
-              <p class="text-xs sm:text-sm font-mono text-base-content/40 bg-base-200 border border-base-content/10 rounded-field px-1.5 py-0.5 leading-none w-fit"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
+
 
               <!-- Search Bar -->
               <button @click="sidebarOpen = true"
