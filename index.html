@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-4c5d1064.css" />
+  <link rel="stylesheet" href="./assets/index-a45c869e.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -277,7 +277,7 @@
 
                   <!-- Search Bar -->
                   <button @click="sidebarOpen = true"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-box bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20 -mx-5 sm:-mx-6">
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-none bg-base-300 border-x-0 border-y border-base-content/10 transition-colors hover:border-base-content/20 -mx-5 sm:-mx-6">
                     <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
                     <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
                     <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
@@ -299,7 +299,7 @@
                   </template>
 
                   <!-- Prompt Input -->
-                  <div class="relative w-full rounded-box bg-base-300 border border-base-content/10 -mx-5 sm:-mx-6">
+                  <div class="relative w-full rounded-none bg-base-300 border-x-0 border-t-0 border-b border-base-content/10 -mx-5 sm:-mx-6 -mb-5 sm:-mb-6">
                     <textarea x-model="hubPrompt"
                       @keydown.enter.prevent="sendHubPrompt"
                       @input="autoResize($el)"
@@ -347,9 +347,8 @@
                               <span class="flex-1 truncate">Manage agents...</span>
                             </button>
                           </div>
-                        </div>
-                        <span class="text-xs text-base-content/25 font-mono tabular-nums" x-text="hubPrompt.length + '/4000'"></span>
                       </div>
+                    </div>
                       <button @click="sendHubPrompt()" :disabled="!hubPrompt.trim()"
                         class="flex items-center justify-center w-8 h-8 rounded-full text-primary transition-colors hover:bg-base-content/5 disabled:opacity-30"
                         aria-label="Send message">
