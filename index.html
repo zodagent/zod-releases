@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-ecda3cef.css" />
+  <link rel="stylesheet" href="./assets/index-6741c192.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -196,10 +196,9 @@
               <!-- Welcome card -->
               <div class="border border-base-content/10 rounded-box bg-base-200 transition-all duration-200"
                    :class="hubCardOpen ? 'p-5 sm:p-6' : 'p-3'">
-                <!-- Collapsed: minimal single row -->
-                <div x-show="!hubCardOpen" @click="hubCardOpen = true"
-                     class="flex items-center gap-3 cursor-pointer select-none">
-                  <span class="inline-block h-7 w-[76px] text-primary logo-hub" style="line-height:0">
+                <!-- Collapsed: minimal single row with full-width input -->
+                <div x-show="!hubCardOpen" class="flex items-center gap-3">
+                  <span class="inline-block h-7 w-[76px] text-primary logo-hub shrink-0" style="line-height:0">
                     <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
     <g>
@@ -216,12 +215,15 @@
 </svg>
 
                   </span>
-                  <span class="flex-1 min-w-0 text-sm font-mono text-base-content/40 truncate">Ask anything, or select a session to continue.</span>
+                  <input type="text" readonly tabindex="-1"
+                    @click="hubCardOpen = true" @focus="hubCardOpen = true"
+                    placeholder="Ask anything, or select a session to continue."
+                    class="flex-1 min-w-0 cursor-pointer bg-transparent text-sm font-mono text-base-content/40 outline-none placeholder-base-content/30" />
                   <svg class="w-4 h-4 text-base-content/40 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
 
                 <!-- Expanded -->
-                <div x-show="hubCardOpen" x-cloak class="space-y-5">
+                <div x-show="hubCardOpen" x-cloak class="space-y-3">
                   <!-- Top row: logo (collapse) · small API status + chevron (right) -->
                   <div class="flex items-center justify-between gap-3">
                     <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
