@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-b1b9843a.css" />
+  <link rel="stylesheet" href="./assets/index-323849d0.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -195,7 +195,7 @@
             <div class="w-full max-w-lg">
               <!-- Welcome card -->
               <div class="border border-base-content/10 rounded-box bg-base-200 transition-all duration-200"
-                   :class="hubCardOpen ? 'p-5 sm:p-6' : 'p-3'">
+                   :class="hubCardOpen ? '' : 'p-3'">
                 <!-- Collapsed: minimal single row with full-width input -->
                 <div x-show="!hubCardOpen" class="flex items-center gap-3">
                   <span class="inline-block h-7 w-[76px] text-primary logo-hub shrink-0" style="line-height:0">
@@ -225,7 +225,7 @@
                 <!-- Expanded -->
                 <div x-show="hubCardOpen" x-cloak class="space-y-0">
                   <!-- Top row: logo (collapse) · small API status + chevron (right) -->
-                  <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center justify-between gap-3 px-5 sm:px-6 pt-5 sm:pt-6">
                     <button @click="hubCardOpen = false" title="Collapse" class="inline-block h-7 w-[76px] text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
                       <svg viewBox="4.0365 3.7214 458 174.3693" style="overflow: visible; fill: currentColor" xmlns="http://www.w3.org/2000/svg">
   <g transform="matrix(1, 0, 0, 1, -455.5702819824219, -140.9014434814453)">
@@ -265,7 +265,7 @@
                     </div>
                   </div>
                   <!-- Greeting + time -->
-                  <div class="mb-4">
+                  <div class="mb-4 px-5 sm:px-6">
                     <div class="flex items-start justify-between gap-4">
                       <h1 class="text-2xl sm:text-4xl font-medium text-primary leading-tight">
                         <span>Good </span><span>there.</span>
@@ -275,95 +275,93 @@
                     <p class="mt-1 text-xs sm:text-sm font-mono text-base-content/40 leading-snug"><span class="text-primary font-medium">Ask anything</span>, or <span class="text-primary font-medium">select a session</span> to continue.</p>
                   </div>
 
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Full-width search + input (below the greeting card) -->
-            <div x-show="hubCardOpen" x-cloak class="w-full mt-3 space-y-3">
-              <!-- Search Bar -->
-              <button @click="sidebarOpen = true"
-                class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-box bg-base-300 border border-base-content/10 transition-colors hover:border-base-content/20">
-                <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
-                <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
-                <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
-              </button>
-
-              <!-- Running sessions indicator -->
-              <template x-if="showRunningSession">
-                <div class="flex items-center gap-2.5 px-1 py-2">
-                  <span class="shrink-0 text-primary"><span class="braille-loader"></span></span>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium text-primary">Active session</div>
-                    <div class="text-xs text-primary/60">
-                      <span x-show="agentRunning">Agent running...</span>
-                      <span x-show="streamingResponse">Streaming response...</span>
-                    </div>
-                  </div>
-                  <button @click="stopAgent()" class="btn btn-xs btn-ghost text-error hover:bg-error/10 border border-error/20" title="Stop the agent">Stop</button>
-                </div>
-              </template>
-
-              <!-- Prompt Input -->
-              <div class="relative w-full rounded-box bg-base-300 border border-base-content/10">
-                <textarea x-model="hubPrompt"
-                  @keydown.enter.prevent="sendHubPrompt"
-                  @input="autoResize($el)"
-                  class="w-full bg-transparent text-sm text-base-content placeholder-base-content/30 outline-none resize-none min-h-12 leading-relaxed px-3 pt-3 pb-2"
-                  rows="2"
-                  :placeholder="hubIsSearchMode ? 'Search the web with ' + searchProviderLabel + '...' : 'Ask ' + selectedAgentLabel + '...'"></textarea>
-                <div class="flex items-center justify-between px-2 pb-2 pt-2">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <!-- Agent selector -->
-                    <div class="relative shrink-0">
-                      <button @click="hubAgentOpen = !hubAgentOpen"
-                        class="flex items-center gap-1 text-xs font-medium rounded-full leading-none px-2 py-[3px] transition-colors border"
-                        :class="selectedAgentId ? 'text-primary bg-primary/10 border-primary/30' : 'text-base-content/40 hover:text-base-content/70 hover:bg-base-content/5 border-base-content/10'"
-                        :title="selectedAgentId ? 'Running: ' + selectedAgentLabel : 'Web search (' + searchProviderLabel + ') — pick an agent to run it instead'">
-                        <i :data-lucide="hubIsSearchMode ? 'search' : 'layers'" class="w-2.5 h-2.5"></i>
-                        <span class="hidden sm:inline max-w-[9rem] truncate" x-text="selectedAgentLabel"></span>
-                        <i data-lucide="chevron-down" class="w-2.5 h-2.5 opacity-60"></i>
-                      </button>
-                      <div x-show="hubAgentOpen" @click.outside="hubAgentOpen = false" x-cloak
-                        x-effect="hubAgentOpen && refreshIconsSoon()"
-                        class="absolute bottom-full left-0 mb-1 w-56 sm:w-64 max-h-72 overflow-y-auto scrollbar-thin bg-base-200 border border-base-content/10 z-50 py-1 rounded-box">
-                        <button @click="pickAgent('')"
-                          class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
-                          :class="!selectedAgentId ? 'bg-base-content/10' : ''">
-                          <i data-lucide="search" class="w-3.5 h-3.5 text-base-content/40 shrink-0"></i>
-                          <span class="flex-1 truncate" x-text="'Search the web'"></span>
-                          <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="searchProviderLabel"></span>
-                        </button>
-                        <div class="my-1 mx-3 h-px bg-base-content/10"></div>
-                        <template x-for="h in agentOptions" :key="h.id">
-                          <button @click="pickAgent(h.id)"
-                            class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
-                            :class="selectedAgentId === h.id ? 'bg-base-content/10' : ''">
-                            <div class="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                              <img :src="$store.agents.getAgentAvatar(h.id, 24)" :alt="h.name" class="w-full h-full object-cover" />
-                            </div>
-                            <span class="flex-1 truncate" x-text="h.name"></span>
-                            <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="h.steps + ' steps'"></span>
-                          </button>
-                        </template>
-                        <div class="my-1 mx-3 h-px bg-base-content/10"></div>
-                        <button @click="hubCloseManage()"
-                          class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5 text-base-content/60">
-                          <i data-lucide="settings" class="w-3.5 h-3.5 shrink-0"></i>
-                          <span class="flex-1 truncate">Manage agents...</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <button @click="sendHubPrompt()" :disabled="!hubPrompt.trim()"
-                    class="flex items-center justify-center w-8 h-8 rounded-full text-primary transition-colors hover:bg-base-content/5 disabled:opacity-30"
-                    aria-label="Send message">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                  <!-- Search Bar -->
+                  <button @click="sidebarOpen = true"
+                    class="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-none bg-base-300 border-x-0 border-y border-base-content/10 transition-colors hover:border-base-content/20">
+                    <i data-lucide="search" class="w-4 h-4 text-base-content/40 shrink-0"></i>
+                    <span class="flex-grow w-full min-w-0 text-sm text-base-content/30 truncate leading-none">Search sessions, agents, tools, commands...</span>
+                    <span class="text-xs font-mono text-base-content/40 bg-base-content/5 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline leading-none">Ctrl+K</span>
                   </button>
+
+                  <!-- Running sessions indicator -->
+                  <template x-if="showRunningSession">
+                    <div class="flex items-center gap-2.5 px-5 sm:px-6 py-2 mt-3">
+                      <span class="shrink-0 text-primary"><span class="braille-loader"></span></span>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-primary">Active session</div>
+                        <div class="text-xs text-primary/60">
+                          <span x-show="agentRunning">Agent running...</span>
+                          <span x-show="streamingResponse">Streaming response...</span>
+                        </div>
+                      </div>
+                      <button @click="stopAgent()" class="btn btn-xs btn-ghost text-error hover:bg-error/10 border border-error/20" title="Stop the agent">Stop</button>
+                    </div>
+                  </template>
+
+                  <!-- Prompt Input -->
+                  <div class="relative w-full rounded-none bg-base-300 border-x-0 border-t-0 border-b border-base-content/10">
+                    <textarea x-model="hubPrompt"
+                      @keydown.enter.prevent="sendHubPrompt"
+                      @input="autoResize($el)"
+                      class="w-full bg-transparent text-sm text-base-content placeholder-base-content/30 outline-none resize-none min-h-12 leading-relaxed px-3 pt-3 pb-2"
+                      rows="2"
+                      :placeholder="hubIsSearchMode ? 'Search the web with ' + searchProviderLabel + '...' : 'Ask ' + selectedAgentLabel + '...'"></textarea>
+                    <div class="flex items-center justify-between px-2 pb-2 pt-2">
+                      <div class="flex items-center gap-2 min-w-0">
+                        <!-- Agent selector -->
+                        <div class="relative shrink-0">
+                          <button @click="hubAgentOpen = !hubAgentOpen"
+                            class="flex items-center gap-1 text-xs font-medium rounded-full leading-none px-2 py-[3px] transition-colors border"
+                            :class="selectedAgentId ? 'text-primary bg-primary/10 border-primary/30' : 'text-base-content/40 hover:text-base-content/70 hover:bg-base-content/5 border-base-content/10'"
+                            :title="selectedAgentId ? 'Running: ' + selectedAgentLabel : 'Web search (' + searchProviderLabel + ') — pick an agent to run it instead'">
+                            <i :data-lucide="hubIsSearchMode ? 'search' : 'layers'" class="w-2.5 h-2.5"></i>
+                            <span class="hidden sm:inline max-w-[9rem] truncate" x-text="selectedAgentLabel"></span>
+                            <i data-lucide="chevron-down" class="w-2.5 h-2.5 opacity-60"></i>
+                          </button>
+                          <div x-show="hubAgentOpen" @click.outside="hubAgentOpen = false" x-cloak
+                            x-effect="hubAgentOpen && refreshIconsSoon()"
+                            class="absolute bottom-full left-0 mb-1 w-56 sm:w-64 max-h-72 overflow-y-auto scrollbar-thin bg-base-200 border border-base-content/10 z-50 py-1 rounded-box">
+                            <button @click="pickAgent('')"
+                              class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
+                              :class="!selectedAgentId ? 'bg-base-content/10' : ''">
+                              <i data-lucide="search" class="w-3.5 h-3.5 text-base-content/40 shrink-0"></i>
+                              <span class="flex-1 truncate" x-text="'Search the web'"></span>
+                              <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="searchProviderLabel"></span>
+                            </button>
+                            <div class="my-1 mx-3 h-px bg-base-content/10"></div>
+                            <template x-for="h in agentOptions" :key="h.id">
+                              <button @click="pickAgent(h.id)"
+                                class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5"
+                                :class="selectedAgentId === h.id ? 'bg-base-content/10' : ''">
+                                <div class="w-6 h-6 rounded-full overflow-hidden shrink-0">
+                                  <img :src="$store.agents.getAgentAvatar(h.id, 24)" :alt="h.name" class="w-full h-full object-cover" />
+                                </div>
+                                <span class="flex-1 truncate" x-text="h.name"></span>
+                                <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="h.steps + ' steps'"></span>
+                              </button>
+                            </template>
+                            <div class="my-1 mx-3 h-px bg-base-content/10"></div>
+                            <button @click="hubCloseManage()"
+                              class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-base-content/5 text-base-content/60">
+                              <i data-lucide="settings" class="w-3.5 h-3.5 shrink-0"></i>
+                              <span class="flex-1 truncate">Manage agents...</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <button @click="sendHubPrompt()" :disabled="!hubPrompt.trim()"
+                        class="flex items-center justify-center w-8 h-8 rounded-full text-primary transition-colors hover:bg-base-content/5 disabled:opacity-30"
+                        aria-label="Send message">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
             </div>
+
 
         </div>
       </div>
