@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-bf10571b.css" />
+  <link rel="stylesheet" href="./assets/index-3a9f9806.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -95,6 +95,15 @@
                 </span>
               </button>
               <div class="flex-1"></div>
+              <button @click="openActionsList()" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-primary transition-colors rounded-selector" title="Actions">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+              </button>
+              <button @click="openAgentsList()" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-primary transition-colors rounded-selector" title="Contacts">
+                <i data-lucide="users" class="w-4 h-4"></i>
+              </button>
+              <button @click="openSettingsTab('list')" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-primary transition-colors rounded-selector" title="Settings">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+              </button>
               <button @click="createNewSession()" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-primary transition-colors rounded-selector" title="New chat">
                 <i data-lucide="message-square-plus" class="w-4 h-4"></i>
               </button>
@@ -153,7 +162,8 @@
 
             <template x-for="(g, gi) in groups" :key="g.label">
               <div>
-                <div class="pt-2 pb-0.5 px-2 text-xs font-semibold uppercase tracking-wider text-base-content/40" x-text="g.label"></div>
+                <div x-show="g.label !== 'Sessions' && g.label !== 'Running sessions'"
+                  class="pt-2 pb-0.5 px-2 text-xs font-semibold uppercase tracking-wider text-base-content/40" x-text="g.label"></div>
                 <template x-for="(r, ri) in g.items" :key="r.id">
                   <div :data-hl="hl === r._idx ? '' : null"
                     :class="hl === r._idx ? 'bg-base-content/10' : 'hover:bg-base-content/5'"
@@ -171,12 +181,29 @@
                       </div>
                       <span class="shrink-0 text-xs text-base-content/40" x-text="r.meta"></span>
                     </button>
-                    <button x-show="r.kind === 'session'" @click="removeSessionResult(r)"
-                      :title="confirmDelete[r.id] ? 'Click again to confirm' : 'Delete chat'"
-                      class="shrink-0 min-h-7 min-w-7 flex items-center justify-center transition-colors rounded-selector"
-                      :class="confirmDelete[r.id] ? 'text-error bg-error/10' : 'text-base-content/40 hover:text-error hover:bg-error/10'">
-                      <i :data-lucide="confirmDelete[r.id] ? 'check' : 'trash-2'" class="w-3.5 h-3.5"></i>
-                    </button>
+                    <div x-show="r.kind === 'session'" class="relative shrink-0">
+                      <button @click.stop="toggleSessionMenu(r.id)"
+                        :class="sessionMenuOpen === r.id ? 'text-base-content bg-base-content/10' : 'text-base-content/40 hover:text-base-content hover:bg-base-content/10'"
+                        class="min-h-7 min-w-7 flex items-center justify-center transition-colors rounded-selector"
+                        title="Session options">
+                        <i data-lucide="ellipsis-vertical" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <div x-show="sessionMenuOpen === r.id" @click.outside="closeSessionMenu()" x-cloak
+                        x-effect="sessionMenuOpen === r.id && refreshIconsSoon()"
+                        class="absolute right-0 top-full mt-1 w-44 bg-base-200 border border-base-content/10 rounded-box shadow-lg z-50 py-1">
+                        <button @click="go(r); closeSessionMenu()"
+                          class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-xs text-base-content/70 hover:bg-base-content/5 transition-colors">
+                          <i data-lucide="message-circle" class="w-3.5 h-3.5 text-base-content/40 shrink-0"></i>
+                          <span class="flex-1 truncate">Open chat</span>
+                        </button>
+                        <button @click="removeSessionResult(r); closeSessionMenu()"
+                          :class="confirmDelete[r.id] ? 'text-error bg-error/10' : 'text-error/80 hover:bg-error/10'"
+                          class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors">
+                          <i :data-lucide="confirmDelete[r.id] ? 'check' : 'trash-2'" class="w-3.5 h-3.5 shrink-0"></i>
+                          <span class="flex-1 truncate" x-text="confirmDelete[r.id] ? 'Click again to confirm' : 'Delete chat'"></span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </template>
               </div>
@@ -1370,7 +1397,7 @@
         </div>
         <!-- ═══ MESSAGE NAVIGATOR (floating timeline rail) ═══ -->
         <div class="pointer-events-none absolute inset-y-0 right-0 z-20 flex items-center">
-          <div class="group flex-col items-center gap-1 hidden sm:flex pointer-events-auto"
+          <div class="group flex-col items-center gap-1 hidden sm:flex pointer-events-auto bg-base-200/60 backdrop-blur rounded-full border border-base-content/10 py-2 px-1"
                x-show="msgNavEntries.length > 1">
             <button data-slot="button" @click="navMsg(-1)" type="button" aria-label="Navigate to previous message"
               class="inline-flex items-center justify-center text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mb-1">
@@ -1392,6 +1419,7 @@
               <i data-lucide="chevron-down" class="w-4 h-4"></i>
             </button>
           </div>
+        </div>
         </div>
 
         <!-- ═══ SESSION EVENT HISTORY (fork/rewind log) ═══ -->
@@ -2327,6 +2355,11 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
     <div class="flex-1 flex flex-col overflow-hidden" x-init="init()">
         <div class="shrink-0 z-10">
           <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5 border-b border-base-content/10 bg-panel">
+            <button x-show="activeSettingsTab !== 'list'" @click="openList()"
+              class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+              title="All settings">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
             <i :data-lucide="activeTabMeta.icon" class="size-4 shrink-0 text-base-content/60"></i>
             <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 max-w-48 sm:max-w-80 lg:max-w-md shrink-0">
               <span class="truncate min-w-0 text-sm font-medium text-base-content" x-text="activeTabMeta.title"></span>
@@ -2355,6 +2388,32 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           </div>
 
         </div>
+
+        <div class="flex-1 min-h-0 flex min-w-0">
+
+          <!-- ═══ SETTINGS LIST (full panel) ═══ -->
+          <template x-if="activeSettingsTab === 'list'">
+            <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+              <div class="py-2 px-2 sm:px-3">
+                <template x-for="t in settingsTabList" :key="t.id">
+                  <button @click="openTab(t.id)"
+                    class="w-full flex items-center gap-3 px-3 py-3 text-left rounded-box hover:bg-base-content/5 transition-colors">
+                    <span class="w-9 h-9 rounded-field flex items-center justify-center shrink-0 bg-base-300">
+                      <i :data-lucide="t.icon" class="w-4 h-4 text-base-content/60"></i>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block truncate text-sm font-medium text-base-content" x-text="t.label"></span>
+                      <span class="block truncate text-xs text-base-content/50" x-text="t.hint"></span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-base-content/30 shrink-0"></i>
+                  </button>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <template x-if="activeSettingsTab !== 'list'">
+          <div class="flex-1 min-h-0 flex flex-col min-w-0">
 
         <!-- ═══ SCROLLABLE TABS ═══ -->
         <div class="overflow-y-auto scrollbar-thin min-h-0" :class="['providers', 'memory', 'tools', 'mcp', 'agents', 'webhooks', 'schedule', 'pairing'].includes(activeSettingsTab) ? 'h-0' : 'flex-1'">
@@ -3487,6 +3546,11 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
         </div>
 
+          </div>
+          </template>
+
+        </div>
+
         <!-- Notification toast -->
         <div x-show="notification" x-cloak x-transition.opacity.duration.300ms class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] px-3 py-2 text-xs border rounded-box"
           :class="notificationType === 'error' ? 'bg-error/10 text-error border-error/20' : 'bg-success/10 text-success border-success/20'"
@@ -3497,6 +3561,85 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                 </div>
               </div>
           </template>
+
+          <!-- ═══ CONTACTS → full agents list ═══ -->
+      <template x-if="separateView && separateView.kind === 'agentsList'">
+        <div class="flex-1 min-h-0 flex flex-col bg-panel">
+          <div class="shrink-0 border-b border-base-content/10 bg-panel">
+            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
+              <button @click="goBack()"
+                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
+              <i data-lucide="users" class="size-4 shrink-0 text-base-content/60"></i>
+              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
+                <span>Contacts</span>
+                <span class="text-xs font-normal text-base-content/30" x-text="' · ' + $store.agents.items.length + ' agent' + ($store.agents.items.length === 1 ? '' : 's')"></span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+            <div class="py-1.5">
+              <template x-for="a in $store.agents.items" :key="a.id">
+                <button @click="openAgentProfile(a.id)"
+                  class="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 text-left hover:bg-base-content/5 transition-colors rounded-box">
+                  <div class="w-11 h-11 rounded-full overflow-hidden shrink-0 flex items-center justify-center" :style="'background: ' + a.color + '22'">
+                    <img :src="$store.agents.getAgentAvatar(a.id, 44)" :alt="a.name" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="truncate text-sm font-medium text-base-content" x-text="a.name"></div>
+                    <div class="truncate text-xs text-base-content/50" x-text="(a.system || '').split('\n')[0]"></div>
+                  </div>
+                  <span class="text-xs font-mono text-base-content/30 shrink-0" x-text="(a.steps || []).length + ' steps'"></span>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-base-content/30 shrink-0"></i>
+                </button>
+              </template>
+              <div x-show="!$store.agents.items.length" class="text-center py-10 text-xs text-base-content/30">
+                No agents yet.
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+          <!-- ═══ ACTIONS → full actions list ═══ -->
+      <template x-if="separateView && separateView.kind === 'actionsList'">
+        <div class="flex-1 min-h-0 flex flex-col bg-panel">
+          <div class="shrink-0 border-b border-base-content/10 bg-panel">
+            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
+              <button @click="goBack()"
+                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
+                title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
+              <i data-lucide="layout-grid" class="size-4 shrink-0 text-base-content/60"></i>
+              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
+                <span>Actions</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+            <div class="py-2 px-2 sm:px-3">
+              <template x-for="a in actionItems" :key="a.id">
+                <button @click="openActionItem(a.id)"
+                  class="w-full flex items-center gap-3 px-3 py-3 text-left rounded-box hover:bg-base-content/5 transition-colors">
+                  <span class="w-9 h-9 rounded-field flex items-center justify-center shrink-0" :style="'background: ' + a.color + '1a'">
+                    <i :data-lucide="a.icon" class="w-4 h-4" :style="'color:' + a.color"></i>
+                  </span>
+                  <span class="flex-1 min-w-0">
+                    <span class="block truncate text-sm font-medium text-base-content" x-text="a.title"></span>
+                    <span class="block truncate text-xs text-base-content/50" x-text="a.hint"></span>
+                  </span>
+                  <i data-lucide="chevron-right" class="w-4 h-4 text-base-content/30 shrink-0"></i>
+                </button>
+              </template>
+            </div>
+          </div>
+        </div>
+      </template>
 
           <!-- ═══ CRON → full task page ═══ -->
           <template x-if="separateView && separateView.kind === 'cron'">
@@ -3909,23 +4052,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
             <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
               <div class="min-h-full flex flex-col items-center">
                 <div class="w-full flex-1 flex flex-col bg-panel">
-                  <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                    <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                      <button @click="goBack()"
-                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                        title="Close">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                      </button>
-                      <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                      <i data-lucide="cpu" class="size-4 shrink-0 text-info"></i>
-                      <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
-                        <span class="truncate min-w-0 text-sm font-medium text-base-content">LLM Chat Context</span>
-                        <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Context consumption &amp; what's sent per request</span>
-                      </div>
-                      <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                    </div>
-                  </div>
-
                   <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-3 sm:px-4 py-3 space-y-6">
                     <!-- ═══ Context usage (RLM) ═══ -->
                     <div>
@@ -4381,22 +4507,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
             <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
               <div class="min-h-full flex flex-col items-center">
                 <div class="w-full  flex-1 flex flex-col bg-panel">
-                  <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                    <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                      <button @click="goBack()"
-                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                        title="Close">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                                              </button>
-                      <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                      <i data-lucide="keyboard" class="size-4 shrink-0 text-base-content/40"></i>
-                      <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
-                        <span class="truncate min-w-0 text-sm font-medium text-base-content">Help &amp; shortcuts</span>
-                        <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Navigate everything from the keyboard</span>
-                      </div>
-                      <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                    </div>
-                  </div>
                   <div class="px-3 sm:px-4 py-3">
                     <template x-for="(g, gi) in (separateView.shortcuts || [])" :key="'g' + gi">
                       <div class="mb-5">
@@ -4428,6 +4538,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-z6z8kct8.js"></script>
+<script type="module" src="./assets/index-w86shhrx.js"></script>
 </body>
 </html>
