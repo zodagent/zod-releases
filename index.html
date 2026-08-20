@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-47faf135.css" />
+  <link rel="stylesheet" href="./assets/index-5929a122.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -1552,16 +1552,16 @@
                   class="composer-input flex-1 min-w-0 bg-transparent outline-none resize-none border-0 px-1.5 py-1.5 min-h-[2.5rem] max-h-[8rem] overflow-y-auto"
                   rows="1"></textarea>
                 <!-- Context -->
-                <div x-show="contextPct > 0" class="flex items-center shrink-0">
+                <div x-show="liveContextPct > 0" class="flex items-center shrink-0">
                   <button @click="openLLMContext()"
                     class="flex items-center gap-1.5 rounded-full px-1 py-1 sm:px-1.5 transition-colors hover:bg-base-content/5"
                     title="Context &amp; traces — click for details">
-                    <i data-lucide="activity" class="w-3.5 h-3.5 shrink-0" :style="'color:' + contextColor"></i>
+                    <i data-lucide="activity" class="w-3.5 h-3.5 shrink-0" :style="'color:' + liveContextColor"></i>
                     <span class="text-[0.65rem] text-base-content/30 hidden sm:inline">ctx</span>
                     <div class="w-12 h-1.5 bg-base-content/8 rounded-full overflow-hidden hidden sm:block">
-                      <div class="h-full rounded-full transition-all duration-300" :style="'width:' + contextPct + '%; background:' + contextColor"></div>
+                      <div class="h-full rounded-full transition-all duration-300" :style="'width:' + liveContextPct + '%; background:' + liveContextColor"></div>
                     </div>
-                    <span class="text-[0.65rem] font-mono text-base-content/30 tabular-nums hidden sm:inline" x-text="contextPct + '%'"></span>
+                    <span class="text-[0.65rem] font-mono text-base-content/30 tabular-nums hidden sm:inline" x-text="liveContextPct + '%'"></span>
                   </button>
                 </div>
                 <!-- Send / Stop -->
@@ -3905,43 +3905,47 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     <div class="border border-base-content/10 rounded-box bg-panel p-3 sm:p-4">
                       <div class="flex items-center gap-2 mb-3">
                         <i data-lucide="gauge" class="w-4 h-4 text-info shrink-0"></i>
-                        <span class="text-sm font-semibold text-base-content">Context usage</span>
-                        <span class="ml-auto text-xs font-mono text-base-content/35 tabular-nums" x-text="llmContextStats.pct + '% used'"></span>
+                        <span class="text-sm font-semibold text-base-content">Context (RLM)</span>
+                        <span class="ml-auto text-xs font-mono text-base-content/35 tabular-nums" x-text="llmContextStats.rlm.livePct + '% of live budget'"></span>
                       </div>
-                      <div class="text-xs text-base-content/50 truncate mb-2">
+                      <div class="text-xs text-base-content/50 truncate mb-3">
                         <span x-text="llmContextStats.title"></span>
                         <span class="mx-1.5 text-base-content/25">&middot;</span>
                         <span class="text-base-content/70" x-text="llmContextStats.model"></span>
                         <span class="mx-1.5 text-base-content/25">&middot;</span>
                         <span x-text="llmContextStats.provider"></span>
                       </div>
-                      <!-- Progress bar -->
+                      <!-- RLM live-window fill -->
                       <div class="w-full h-2.5 bg-base-content/8 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-300" :style="'width:' + llmContextStats.pct + '%; background:' + contextColor"></div>
+                        <div class="h-full rounded-full transition-all duration-300" :style="'width:' + llmContextStats.rlm.livePct + '%; background:' + llmContextStats.rlm.liveColor"></div>
                       </div>
-                      <!-- Stats grid -->
-                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-                        <div class="rounded-field border border-base-content/10 bg-base-100/40 px-3 py-2">
-                          <div class="text-[0.65rem] font-semibold uppercase tracking-wider text-base-content/35">Estimated tokens</div>
-                          <div class="text-sm font-mono text-base-content tabular-nums" x-text="llmContextStats.tokens.toLocaleString()"></div>
+                      <!-- Turn segmentation: live window vs external memory -->
+                      <div class="mt-3">
+                        <div class="flex gap-px w-full h-6 overflow-hidden rounded-field border border-base-content/10">
+                          <template x-for="(i) in llmContextStats.rlm.windowTurns" :key="i">
+                            <div class="flex-1" :class="i <= llmContextStats.rlm.liveTurns ? '' : 'opacity-25'"
+                                 :style="i <= llmContextStats.rlm.liveTurns ? ('background:' + llmContextStats.rlm.liveColor) : 'background:var(--color-base-content)'"
+                                 :title="i <= llmContextStats.rlm.liveTurns ? 'Turn ' + i + ' — in the live window' : 'Turn ' + i + ' — empty slot'"></div>
+                          </template>
                         </div>
-                        <div class="rounded-field border border-base-content/10 bg-base-100/40 px-3 py-2">
-                          <div class="text-[0.65rem] font-semibold uppercase tracking-wider text-base-content/35">Context window</div>
-                          <div class="text-sm font-mono text-base-content tabular-nums" x-text="llmContextStats.window.toLocaleString()"></div>
+                        <div class="flex items-center gap-3 mt-2 text-xs text-base-content/40">
+                          <span class="inline-flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-sm" :style="'background:' + llmContextStats.rlm.liveColor"></span>
+                            <span x-text="'Live window — last ' + llmContextStats.rlm.liveTurns + ' turns (' + llmContextStats.rlm.liveTokens.toLocaleString() + ' tok)'"></span>
+                          </span>
+                          <span class="inline-flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-sm bg-base-content/15"></span>
+                            <span x-text="llmContextStats.rlm.externalTurns + ' older turns in external memory'"></span>
+                          </span>
                         </div>
-                        <div class="rounded-field border border-base-content/10 bg-base-100/40 px-3 py-2">
-                          <div class="text-[0.65rem] font-semibold uppercase tracking-wider text-base-content/35">Characters (est.)</div>
-                          <div class="text-sm font-mono text-base-content tabular-nums" x-text="llmContextStats.chars.toLocaleString()"></div>
-                        </div>
-                        <div class="rounded-field border border-base-content/10 bg-base-100/40 px-3 py-2">
-                          <div class="text-[0.65rem] font-semibold uppercase tracking-wider text-base-content/35">Messages</div>
-                          <div class="text-sm font-mono text-base-content tabular-nums" x-text="llmContextStats.messages"></div>
-                        </div>
+                      </div>
+                      <div class="mt-2 text-xs text-base-content/35 leading-relaxed">
+                        RLM keeps only the last <span class="font-mono text-primary/70" x-text="llmContextStats.rlm.windowTurns"></span> turns in the live window to keep the prompt small. Older turns are stored externally and pulled back exactly via the <span class="font-mono text-primary/70">context</span> tool when needed — nothing is summarized or lost.
                       </div>
                       <div class="flex items-center gap-2 mt-3 text-xs text-base-content/40">
                         <span class="inline-flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full" :style="'background:' + contextColor"></span>
-                          <span x-text="contextPct > 80 ? 'Near the limit — run /compact to free context.' : contextPct > 50 ? 'Getting warm — watch this as the chat grows.' : 'Plenty of headroom left.'"></span>
+                          <span class="w-2 h-2 rounded-full" :style="'background:' + llmContextStats.rlm.liveColor"></span>
+                          <span x-text="llmContextStats.rlm.livePct > 80 ? 'Live window near its budget — compact soon.' : llmContextStats.rlm.livePct > 50 ? 'Live window getting warm — watch it as the chat grows.' : 'Plenty of headroom in the live window.'"></span>
                         </span>
                       </div>
                     </div>
@@ -4487,6 +4491,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-xhh00gny.js"></script>
+<script type="module" src="./assets/index-kt8q2scx.js"></script>
 </body>
 </html>
