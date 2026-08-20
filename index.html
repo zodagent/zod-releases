@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-db9e3f4a.css" />
+  <link rel="stylesheet" href="./assets/index-bf10571b.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -1238,29 +1238,6 @@
               <i data-lucide="arrow-down" class="w-4 h-4"></i>
               <span x-show="scrollUnreadCount > 0" class="absolute -top-1 -right-1 min-w-4 h-4 flex items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-content px-1" x-text="scrollUnreadCount > 99 ? '99+' : scrollUnreadCount"></span>
             </button>
-            <!-- ═══ MESSAGE NAVIGATOR (timeline rail) ═══ -->
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 z-20">
-              <div class="group flex-col items-center gap-1 hidden sm:flex" x-show="msgNavEntries.length > 1">
-                <button data-slot="button" @click="navMsg(-1)" type="button" aria-label="Navigate to previous message"
-                  class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mb-1">
-                  <i data-lucide="chevron-up" class="w-4 h-4"></i>
-                </button>
-                <div class="flex flex-col items-end gap-0.5">
-                  <template x-for="e in msgNavEntries" :key="e.index">
-                    <button data-slot="button" @click="jumpToMessage(e.index)" type="button"
-                      :aria-label="'Go to ' + (e.role === 'assistant' ? 'response' : 'message')"
-                      class="gap-2 text-base-content/50 hover:text-base-content px-2.5 text-xs rounded-full relative flex items-center justify-end w-10 h-3 transition-colors duration-100 group/tick hover:bg-transparent">
-                      <div class="rounded-full transition-all group-hover/tick:bg-primary group-hover/tick:w-4 duration-150 h-[1px] opacity-50 group-hover:opacity-100 w-1.5"
-                        :class="msgNavActive === e.index ? 'bg-primary !w-4 opacity-100' : 'bg-base-content/50'"></div>
-                    </button>
-                  </template>
-                </div>
-                <button data-slot="button" @click="navMsg(1)" type="button" aria-label="Navigate to next message"
-                  class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mt-1">
-                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
             <!-- ═══ FORWARD PICKER (slide-in panel) ═══ -->
             <div x-show="forwardPicker.show" x-cloak
                  x-transition:enter="transition ease-out duration-200"
@@ -1391,6 +1368,30 @@
             </div>
           </div>
         </div>
+        <!-- ═══ MESSAGE NAVIGATOR (floating timeline rail) ═══ -->
+        <div class="pointer-events-none absolute inset-y-0 right-0 z-20 flex items-center">
+          <div class="group flex-col items-center gap-1 hidden sm:flex pointer-events-auto"
+               x-show="msgNavEntries.length > 1">
+            <button data-slot="button" @click="navMsg(-1)" type="button" aria-label="Navigate to previous message"
+              class="inline-flex items-center justify-center text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mb-1">
+              <i data-lucide="chevron-up" class="w-4 h-4"></i>
+            </button>
+            <div class="flex flex-col items-end gap-0.5">
+              <template x-for="e in msgNavEntries" :key="e.index">
+                <button data-slot="button" @click="jumpToMessage(e.index)" type="button"
+                  :aria-label="'Go to ' + (e.role === 'assistant' ? 'response' : 'message')"
+                  :class="msgNavActive === e.index ? 'opacity-100' : 'opacity-60 hover:opacity-100'"
+                  class="gap-2 text-base-content/60 hover:text-base-content px-2.5 text-xs rounded-full relative flex items-center justify-end w-10 h-3 transition-opacity duration-100 group/tick hover:bg-transparent">
+                  <div class="rounded-full transition-all group-hover/tick:bg-primary group-hover/tick:w-4 duration-150 h-[1px] opacity-50 group-hover:opacity-100 w-1.5"
+                    :class="msgNavActive === e.index ? 'bg-primary !w-4 opacity-100' : 'bg-base-content/50'"></div>
+                </button>
+              </template>
+            </div>
+            <button data-slot="button" @click="navMsg(1)" type="button" aria-label="Navigate to next message"
+              class="inline-flex items-center justify-center text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mt-1">
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
 
         <!-- ═══ SESSION EVENT HISTORY (fork/rewind log) ═══ -->
