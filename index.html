@@ -544,8 +544,43 @@
                       <span class="font-medium text-primary/70" x-text="m.replyTo && (m.replyTo.agent || m.replyTo.role)"></span>
                       <span class="truncate" x-text="m.replyTo && m.replyTo.text"></span>
                     </div>
-                    <div x-show="isTextRole(m)" class="bg-primary text-primary-content border border-primary rounded-br-md px-2.5 sm:px-3 py-2 mb-2 rounded-box">
-                        <div class="prose" x-effect="renderChatHtml($el, m.text)"></div>
+                    <div x-show="isTextRole(m)" class="bg-base-300 border border-base-content/10 rounded-box overflow-hidden mb-2">
+                        <div class="px-2.5 py-2">
+                          <div class="prose" x-effect="renderChatHtml($el, m.text)"></div>
+                        </div>
+                        <div class="w-full flex flex-wrap items-center justify-between gap-0.5 px-1.5 py-1 border-t border-base-content/5">
+                          <button @click="startReply(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="Reply">
+                            <i data-lucide="reply" class="w-3 h-3"></i>
+                            <span class="hidden group-hover/btn:inline">Reply</span>
+                          </button>
+                          <button @click="openReactionPicker($event, i)" class="min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="React">
+                            <i data-lucide="smile-plus" class="w-3 h-3"></i>
+                          </button>
+                          <button @click="editMessage(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="Edit">
+                            <i data-lucide="pencil" class="w-3 h-3"></i>
+                            <span class="hidden group-hover/btn:inline">Edit</span>
+                          </button>
+                          <button @click="copyText(m.text)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-base-content/60 transition-colors" title="Copy">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span class="hidden group-hover/btn:inline">Copy</span>
+                          </button>
+                          <button @click="togglePin(i)" class="min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium transition-colors" :class="m.pinned ? 'text-warning' : 'text-base-content/25 hover:text-warning'" :title="m.pinned ? 'Unpin' : 'Pin'">
+                            <i data-lucide="pin" class="w-3 h-3"></i>
+                          </button>
+                          <button @click="deleteMessage(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-error transition-colors" title="Delete">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                            <span class="hidden group-hover/btn:inline">Delete</span>
+                          </button>
+                          <button @click="openForwardPicker(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-info transition-colors" title="Forward">
+                            <i data-lucide="forward" class="w-3 h-3"></i>
+                            <span class="hidden group-hover/btn:inline">Forward</span>
+                          </button>
+                          <span class="read-tick text-primary/50" x-show="m.delivered !== false">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 16 11" fill="none"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 5.5L9 9.5L15 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x-show="m.read"/></svg>
+                          </span>
+                          <span x-show="m.edited" class="text-xs text-base-content/25 italic px-0.5">edited</span>
+                          <span class="msg-time-hover text-xs text-base-content/25 px-1" x-text="m.time" @click="showMessageInfo(i)" style="cursor: pointer"></span>
+                        </div>
                       </div>
                     <!-- ═══ REACTIONS (user) ═══ -->
                     <div x-show="(m.reactions || []).length" class="flex flex-wrap gap-1 mt-1 justify-end">
@@ -634,38 +669,6 @@
                         </div>
                       </template>
                     </div>
-                  </div>
-                  <div class="w-full flex flex-wrap items-center justify-between gap-0.5 mt-1.5">
-                    <button @click="startReply(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="Reply">
-                      <span class="hidden group-hover/btn:inline">Reply</span>
-                    </button>
-                    <button @click="openReactionPicker($event, i)" class="min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="React">
-                      <i data-lucide="smile-plus" class="w-3 h-3"></i>
-                    </button>
-                    <button @click="editMessage(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="Edit">
-                      <i data-lucide="pencil" class="w-3 h-3"></i>
-                      <span class="hidden group-hover/btn:inline">Edit</span>
-                    </button>
-                    <button @click="copyText(m.text)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-base-content/60 transition-colors" title="Copy">
-                      <i data-lucide="copy" class="w-3 h-3"></i>
-                      <span class="hidden group-hover/btn:inline">Copy</span>
-                    </button>
-                    <button @click="togglePin(i)" class="min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium transition-colors" :class="m.pinned ? 'text-warning' : 'text-base-content/25 hover:text-warning'" :title="m.pinned ? 'Unpin' : 'Pin'">
-                      <i data-lucide="pin" class="w-3 h-3"></i>
-                    </button>
-                    <button @click="deleteMessage(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-error transition-colors" title="Delete">
-                      <i data-lucide="trash-2" class="w-3 h-3"></i>
-                      <span class="hidden group-hover/btn:inline">Delete</span>
-                    </button>
-                    <button @click="openForwardPicker(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-info transition-colors" title="Forward">
-                      <i data-lucide="forward" class="w-3 h-3"></i>
-                      <span class="hidden group-hover/btn:inline">Forward</span>
-                    </button>
-                    <span class="read-tick text-primary/50" x-show="m.delivered !== false">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 16 11" fill="none"><path d="M1 5.5L5 9.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 5.5L9 9.5L15 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" x-show="m.read"/></svg>
-                    </span>
-                    <span x-show="m.edited" class="text-xs text-base-content/25 italic px-0.5">edited</span>
-                    <span class="msg-time-hover text-xs text-base-content/25 px-1" x-text="m.time" @click="showMessageInfo(i)" style="cursor: pointer"></span>
                   </div>
                 </div>
 
@@ -1083,7 +1086,7 @@
                       </div>
                     </template>
                     <!-- ═══ ACTION BUTTONS ═══ -->
-                    <div x-show="!m.streaming && m.text" class="w-full flex flex-wrap items-center justify-between gap-0.5 mt-2">
+                    <div x-show="!m.streaming && m.text" class="w-full flex flex-wrap items-center justify-between gap-0.5 mt-2 mb-4">
                       <button @click="startReply(i)" class="group/btn min-h-6 min-w-6 sm:min-h-6 sm:min-w-auto sm:px-2 flex items-center justify-center gap-1 text-xs font-medium text-base-content/25 hover:text-primary transition-colors" title="Reply">
                         <i data-lucide="reply" class="w-3 h-3"></i>
 <span class="hidden group-hover/btn:inline">Reply</span>
