@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-1e5c7674.css" />
+  <link rel="stylesheet" href="./assets/index-ee1b8b14.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -3962,6 +3962,129 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
               <div class="min-h-full flex flex-col items-center">
                 <div class="w-full flex-1 flex flex-col bg-panel">
                   <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-3 sm:px-4 py-3 space-y-6">
+                    <!-- ═══ Context tool → visual control panel ═══ -->
+                    <div>
+                      <div class="flex items-center gap-2 mb-3">
+                        <i data-lucide="scan-search" class="w-4 h-4 text-info shrink-0"></i>
+                        <span class="text-sm font-semibold text-base-content">Context tool</span>
+                        <span class="ml-auto text-xs font-mono text-base-content/35 truncate">RLM memory · retrieve / archive / summarize</span>
+                      </div>
+                      <div class="text-xs text-base-content/40 mb-3 leading-relaxed">
+                        This panel is the same tool the LLM can call — it queries the stored history (including archived turns), compacts the live window, and writes sub-LLM summaries back into the chat.
+                      </div>
+
+                      <!-- Action tabs mirroring the tool's `action` enum -->
+                      <div class="flex gap-1 p-1 bg-base-300 rounded-selector shrink-0 w-fit mb-3">
+                        <button type="button" @click="contextToolAction = 'retrieve'"
+                          class="min-h-7 px-2.5 rounded-field text-xs font-medium transition-colors"
+                          :class="contextToolAction === 'retrieve' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">retrieve</button>
+                        <button type="button" @click="contextToolAction = 'archive'"
+                          class="min-h-7 px-2.5 rounded-field text-xs font-medium transition-colors"
+                          :class="contextToolAction === 'archive' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">archive</button>
+                        <button type="button" @click="contextToolAction = 'summarize'"
+                          class="min-h-7 px-2.5 rounded-field text-xs font-medium transition-colors"
+                          :class="contextToolAction === 'summarize' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">summarize</button>
+                      </div>
+
+                      <!-- Shared filters (retrieve / summarize) -->
+                      <div x-show="contextToolAction !== 'archive'" class="grid grid-cols-2 gap-2 mb-3">
+                        <div class="col-span-2 flex items-center gap-2 bg-base-300 border border-base-content/10 rounded-field px-2.5 py-2 focus-within:border-primary/30 transition-colors">
+                          <i data-lucide="search" class="w-3.5 h-3.5 text-base-content/30 shrink-0"></i>
+                          <input x-model="contextToolQuery" type="text" placeholder="Query text (optional)…"
+                            class="flex-1 min-w-0 bg-transparent text-xs text-base-content outline-none placeholder:text-base-content/25" />
+                        </div>
+                        <select x-model="contextToolRole" class="bg-base-300 border border-base-content/10 rounded-field text-xs text-base-content px-2 py-2 outline-none focus:border-primary/30">
+                          <option value="all">any role</option>
+                          <option value="user">user</option>
+                          <option value="assistant">assistant</option>
+                          <option value="system">system</option>
+                          <option value="tool">tool</option>
+                          <option value="error">error</option>
+                          <option value="agent">agent</option>
+                        </select>
+                        <select x-model="contextToolStatus" class="bg-base-300 border border-base-content/10 rounded-field text-xs text-base-content px-2 py-2 outline-none focus:border-primary/30">
+                          <option value="">any status</option>
+                          <option value="success">tool success</option>
+                          <option value="error">tool errors</option>
+                        </select>
+                        <input x-model="contextToolTool" type="text" placeholder="Tool name (optional)…"
+                          class="bg-base-300 border border-base-content/10 rounded-field text-xs text-base-content px-2 py-2 outline-none placeholder:text-base-content/25 focus:border-primary/30" />
+                        <input x-model="contextToolLast" type="number" min="1" max="200" placeholder="Last N"
+                          class="bg-base-300 border border-base-content/10 rounded-field text-xs text-base-content px-2 py-2 outline-none placeholder:text-base-content/25 focus:border-primary/30" title="Max messages to return (last N)" />
+                      </div>
+
+                      <!-- Archive params -->
+                      <div x-show="contextToolAction === 'archive'" class="flex items-center gap-2 mb-3">
+                        <span class="text-xs text-base-content/50">Keep</span>
+                        <input x-model="contextToolKeep" type="number" min="2" max="50"
+                          class="w-20 bg-base-300 border border-base-content/10 rounded-field text-xs text-base-content px-2 py-2 outline-none focus:border-primary/30" title="How many recent messages stay in the live window" />
+                        <span class="text-xs text-base-content/35 truncate">recent messages live — the rest move to the archive intact</span>
+                      </div>
+
+                      <!-- Run button -->
+                      <div class="flex items-center gap-2 mb-3">
+                        <button @click="contextToolRun()" :disabled="contextToolBusy"
+                          class="inline-flex items-center gap-1.5 min-h-8 px-3 rounded-field text-xs font-medium transition-colors border border-primary/30 text-primary hover:bg-primary/10 disabled:opacity-40">
+                          <i data-lucide="play" class="w-3.5 h-3.5" x-show="!contextToolBusy"></i>
+                          <span class="braille-loader" x-show="contextToolBusy"></span>
+                          <span x-text="contextToolBusy ? 'Running…' : 'Run context tool'"></span>
+                        </button>
+                        <span class="text-xs font-mono text-base-content/35 tabular-nums" x-text="contextToolResult ? '· ' + (contextToolResult.action || 'retrieve') + ' → ' + (contextToolResult.ok ? 'ok' : 'error') : ''"></span>
+                      </div>
+
+                      <!-- Result -->
+                      <div x-show="contextToolResult" class="rounded-field border overflow-hidden">
+                        <template x-if="contextToolResult && !contextToolResult.ok">
+                          <div class="bg-error text-error-content px-3 py-2 flex items-start gap-2 text-xs" role="alert">
+                            <i data-lucide="octagon-alert" class="w-3.5 h-3.5 shrink-0 mt-0.5"></i>
+                            <span class="leading-relaxed break-words" x-text="contextToolResult.error"></span>
+                          </div>
+                        </template>
+                        <template x-if="contextToolResult && contextToolResult.ok && (contextToolResult.action === 'archive' || contextToolResult.action === 'summarize')">
+                          <div class="bg-base-300/40 text-xs text-base-content/70 px-3 py-2.5 leading-relaxed">
+                            <span x-text="contextToolResult.action === 'archive'
+                              ? 'Archived ' + contextToolResult.archived + ' older messages intact; ' + contextToolResult.kept + ' kept in the live window (' + contextToolResult.total + ' total).' + (contextToolResult.summary ? ' Summary added to chat.' : '')
+                              : 'Summary of ' + contextToolResult.summarizedMessages + ' messages added to the chat' + (contextToolResult.archived ? '; ' + contextToolResult.archived + ' archived intact.' : '.')"></span>
+                            <div x-show="contextToolResult.summary" class="group" x-data="{ open: false }">
+                              <button @click="open = !open" class="flex items-center gap-1.5 mt-2 text-xs font-mono text-base-content/40 hover:text-base-content transition-colors">
+                                <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                                <span>Preview summary</span>
+                              </button>
+                              <pre x-show="open" class="mt-1.5 text-[11px] leading-relaxed text-base-content/70 bg-base-300/50 p-2 overflow-x-auto whitespace-pre-wrap break-words max-h-56 overflow-y-auto rounded-field" x-text="contextToolResult.summary && contextToolResult.summary.preview ? contextToolResult.summary.preview : contextToolResult.summary"></pre>
+                            </div>
+                          </div>
+                        </template>
+                        <template x-if="contextToolResult && contextToolResult.ok && contextToolResult.action !== 'archive' && contextToolResult.action !== 'summarize'">
+                          <div class="divide-y divide-base-content/5 max-h-72 overflow-y-auto scrollbar-thin">
+                            <div x-show="!contextToolResult.messages || !contextToolResult.messages.length" class="px-3 py-2.5 text-xs text-base-content/35">
+                              <span x-text="(contextToolResult.messages && contextToolResult.messages.length === 0) ? 'No messages matched the selection.' : contextToolResult.message || 'Nothing to show.'"></span>
+                            </div>
+                            <template x-for="(m, i) in (contextToolResult.messages || [])" :key="i">
+                              <div class="group" x-data="{ open: false }">
+                                <div @click="open = !open" class="flex items-center gap-2 py-2 cursor-pointer hover:bg-base-content/5 transition-colors -mx-2 px-2 rounded-selector">
+                                  <span class="text-[0.65rem] font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0"
+                                    :class="m.role === 'system' ? 'text-accent bg-accent/8' : m.role === 'user' ? 'text-primary bg-primary/8' : m.role === 'error' ? 'text-error bg-error/8' : 'text-base-content/50 bg-base-content/5'"
+                                    x-text="m.role"></span>
+                                  <span x-show="m.archived" class="inline-flex items-center gap-1 text-[0.65rem] font-mono text-info/70 bg-info/8 rounded px-1 py-0.5 shrink-0">
+                                    <i data-lucide="archive" class="w-2.5 h-2.5"></i>
+                                    archived
+                                  </span>
+                                  <span class="text-xs font-mono text-base-content/35 tabular-nums shrink-0" x-text="m.time || ''"></span>
+                                  <span class="flex-1 min-w-0 text-xs text-base-content/50 truncate" x-text="m.content || m.preview || '(no text)'"></span>
+                                  <i data-lucide="chevron-down" class="w-3.5 h-3.5 shrink-0 text-base-content/30 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                                </div>
+                                <div x-show="open" class="pb-2.5">
+                                  <pre class="text-[11px] leading-relaxed text-base-content/70 bg-base-300/50 p-2 overflow-x-auto whitespace-pre-wrap break-words rounded-field" x-text="m.content || m.preview || '(no text)'"></pre>
+                                </div>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+
+                    <div class="h-px bg-base-content/10"></div>
+
                     <!-- ═══ Context usage (RLM) ═══ -->
                     <div>
                       <div class="flex items-center gap-2 mb-3">
@@ -4024,18 +4147,31 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                         <span class="text-sm font-semibold text-base-content">Tool activity</span>
                         <span class="ml-auto text-xs font-mono text-base-content/35 tabular-nums" x-text="toolActivity.length + ' tool call' + (toolActivity.length === 1 ? '' : 's')"></span>
                       </div>
+                      <div class="text-xs text-base-content/40 mb-2 flex items-center gap-2">
+                        <i data-lucide="eye-off" class="w-3 h-3 shrink-0"></i>
+                        <span>Toggle a call to keep it <span class="text-base-content/60">out of</span> the LLM context (it stays stored, never lost).</span>
+                      </div>
                       <div x-show="!toolActivity.length" class="text-xs text-base-content/35 py-1">No tool calls recorded in this session yet.</div>
                       <div class="divide-y divide-base-content/5" x-show="toolActivity.length">
                         <template x-for="(t, i) in toolActivity" :key="i">
                           <div class="group" x-data="{ open: false }">
-                            <div @click="open = !open" class="flex items-center gap-2 py-2 cursor-pointer hover:bg-base-content/5 transition-colors -mx-2 px-2 rounded-selector">
+                            <div @click="open = !open" class="flex items-center gap-2 py-2 cursor-pointer hover:bg-base-content/5 transition-colors -mx-2 px-2 rounded-selector" :class="t.excluded ? 'opacity-45' : ''">
+                              <button @click.stop="toggleContextTool(t)" :title="(t.excluded ? 'Re-include' : 'Exclude') + ' this tool call from the LLM context'"
+                                class="min-h-6 min-w-6 flex items-center justify-center rounded-selector transition-colors shrink-0"
+                                :class="t.excluded ? 'text-warning bg-warning/10' : 'text-base-content/30 hover:text-base-content/60'">
+                                <i :data-lucide="t.excluded ? 'eye-off' : 'eye'" class="w-3.5 h-3.5"></i>
+                              </button>
                               <span class="inline-flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0"
                                 :class="t.status === 'success' ? 'text-success bg-success/10' : 'text-error bg-error/10'">
                                 <i :data-lucide="t.status === 'success' ? 'check' : 'x'" class="w-3 h-3"></i>
                                 <span x-text="t.status"></span>
                               </span>
+                              <span x-show="t.archived" class="inline-flex items-center gap-1 text-[0.65rem] font-mono text-info/70 bg-info/8 rounded px-1 py-0.5 shrink-0">
+                                <i data-lucide="archive" class="w-2.5 h-2.5"></i>
+                                archived
+                              </span>
                               <span class="text-xs font-mono text-base-content/70 shrink-0" x-text="t.name"></span>
-                              <span class="flex-1 min-w-0 text-xs text-base-content/40 truncate" x-text="t.status === 'error' ? (t.error || 'Failed') : 'Tool completed'"></span>
+                              <span class="flex-1 min-w-0 text-xs text-base-content/40 truncate" x-text="t.excluded ? 'Excluded from context' : (t.status === 'error' ? (t.error || 'Failed') : 'Tool completed')"></span>
                               <i data-lucide="chevron-down" class="w-3.5 h-3.5 shrink-0 text-base-content/30 transition-transform" :class="open ? 'rotate-180' : ''"></i>
                             </div>
                             <div x-show="open" class="pb-2.5 space-y-2">
@@ -4061,6 +4197,43 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                                 <pre class="p-1.5 text-[11px] text-base-content/70 font-mono leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-56 overflow-y-auto" x-text="toolResultText(t)"></pre>
                               </div>
                             </div>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- ═══ Context messages → manual context editor ═══ -->
+                    <div>
+                      <div class="flex items-center gap-2 mb-3">
+                        <i data-lucide="message-square-dashed" class="w-4 h-4 text-info shrink-0"></i>
+                        <span class="text-sm font-semibold text-base-content">Context messages</span>
+                        <button @click="clearContextExclusions()" class="ml-auto inline-flex items-center gap-1 text-xs font-medium text-base-content/40 hover:text-base-content transition-colors rounded-selector px-1.5 py-1" title="Re-include every excluded message and tool call">
+                          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                          Reset exclusions
+                        </button>
+                      </div>
+                      <div class="text-xs text-base-content/40 mb-2 flex items-center gap-2">
+                        <i data-lucide="eye-off" class="w-3 h-3 shrink-0"></i>
+                        <span>Exclude any message from what gets sent to the LLM. Everything stays stored — re-include anytime.</span>
+                      </div>
+                      <div x-show="!contextMessages.length" class="text-xs text-base-content/35 py-1">No user / assistant messages in this session yet.</div>
+                      <div class="divide-y divide-base-content/5" x-show="contextMessages.length">
+                        <template x-for="m in contextMessages" :key="m.index">
+                          <div class="flex items-center gap-2 py-2" :class="m.excluded ? 'opacity-45' : ''">
+                            <button @click="toggleContextMessage(m)" :title="(m.excluded ? 'Re-include' : 'Exclude') + ' this message from the LLM context'"
+                              class="min-h-6 min-w-6 flex items-center justify-center rounded-selector transition-colors shrink-0"
+                              :class="m.excluded ? 'text-warning bg-warning/10' : 'text-base-content/30 hover:text-base-content/60'">
+                              <i :data-lucide="m.excluded ? 'eye-off' : 'eye'" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <span class="text-[0.65rem] font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0"
+                              :class="m.role === 'user' ? 'text-primary bg-primary/8' : 'text-base-content/50 bg-base-content/5'"
+                              x-text="m.role"></span>
+                            <span class="text-xs font-mono text-base-content/35 tabular-nums shrink-0" x-text="m.tokens.toLocaleString() + ' tok'"></span>
+                            <span x-show="m.tools > 0" class="inline-flex items-center gap-1 text-[0.65rem] font-mono text-base-content/40 bg-base-content/5 rounded px-1 py-0.5 shrink-0">
+                              <i data-lucide="wrench" class="w-2.5 h-2.5"></i>
+                              <span x-text="m.tools"></span>
+                            </span>
+                            <span class="flex-1 min-w-0 text-xs text-base-content/50 truncate" x-text="m.excluded ? '(excluded from context)' : m.preview"></span>
                           </div>
                         </template>
                       </div>
@@ -4466,6 +4639,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-wyw3r9ck.js"></script>
+<script type="module" src="./assets/index-r9dy1j93.js"></script>
 </body>
 </html>
