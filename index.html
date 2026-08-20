@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-3a9f9806.css" />
+  <link rel="stylesheet" href="./assets/index-1e5c7674.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -73,7 +73,7 @@
       <div class="flex flex-col h-full min-h-0" x-data="hubSearch" x-init="init()">
 
           <!-- Sidebar Header -->
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
+          <div class="shrink-0 bg-panel">
             <div class="flex items-center gap-2 px-3 py-2.5">
               <button @click="goToHub()" title="Go to hub" class="shrink-0 h-7 text-primary logo-hub cursor-pointer hover:opacity-80 hover:bg-transparent bg-transparent p-0 gap-0 transition-opacity" style="line-height:0">
                 <span class="inline-block h-7 w-[76px]">
@@ -463,16 +463,26 @@
                   <div class="text-xs text-base-content/25 bg-base-300 px-2.5 py-1 rounded-full select-none"><span x-text="m.text"></span></div>
                 </div>
 
-                <!-- ═══ COMPRESSED SESSION SUMMARY ═══ -->
+                <!-- ═══ COMPRESSED SESSION ARCHIVE ═══ -->
                 <div x-show="m.role === 'system' && m.compressed" class="flex justify-center">
-                  <details class="group/comp max-w-[95%] w-full bg-base-200 border border-warning/20 overflow-hidden rounded-box" open>
+                  <details class="group/comp max-w-[95%] w-full bg-base-200 border border-info/20 overflow-hidden rounded-box" open>
                     <summary class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs cursor-pointer list-none select-none">
-                      <i data-lucide="shrink" class="w-3 h-3 text-warning/60 shrink-0"></i>
-                      <span class="font-semibold text-base-content/60">Session compressed</span>
+                      <i data-lucide="archive" class="w-3 h-3 text-info/60 shrink-0"></i>
+                      <span class="font-semibold text-base-content/60">Session compressed — older context archived</span>
                       <span class="text-xs text-base-content/30 shrink-0" x-text="m.time"></span>
                       <i data-lucide="chevron-down" class="w-3 h-3 ml-auto text-base-content/30 transition-transform duration-200 group-open/comp:rotate-180 shrink-0"></i>
                     </summary>
                     <div class="px-2.5 pb-2 pt-1 prose prose-sm text-base-content/60 [&_>*:first-child]:mt-0 [&_>*:last-child]:mb-0" x-effect="renderChatHtml($el, m.text)"></div>
+                    <div class="flex items-center gap-2 px-2.5 pb-2">
+                      <span class="inline-flex items-center gap-1 text-xs text-base-content/40">
+                        <i data-lucide="database" class="w-3 h-3 shrink-0"></i>
+                        <span x-text="($store.sessions.activeSession?.archive?.length || 0) + ' messages kept intact — retrievable via the context tool'"></span>
+                      </span>
+                      <button @click="restoreArchivedMessages()" class="ml-auto inline-flex items-center gap-1 text-xs font-medium text-primary/80 hover:text-primary hover:bg-primary/10 rounded-field px-2 py-1 transition-colors">
+                        <i data-lucide="undo-2" class="w-3 h-3"></i>
+                        <span>Restore</span>
+                      </button>
+                    </div>
                   </details>
                 </div>
 
@@ -1397,26 +1407,26 @@
         </div>
         <!-- ═══ MESSAGE NAVIGATOR (floating timeline rail) ═══ -->
         <div class="pointer-events-none absolute inset-y-0 right-0 z-20 flex items-center">
-          <div class="group flex-col items-center gap-1 hidden sm:flex pointer-events-auto bg-base-200/60 backdrop-blur rounded-full border border-base-content/10 py-2 px-1"
+          <div class="group flex-col items-center gap-0.5 hidden sm:flex pointer-events-auto bg-base-200/90 backdrop-blur-sm border border-base-content/10 rounded-box py-1.5 px-1"
                x-show="msgNavEntries.length > 1">
             <button data-slot="button" @click="navMsg(-1)" type="button" aria-label="Navigate to previous message"
-              class="inline-flex items-center justify-center text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mb-1">
-              <i data-lucide="chevron-up" class="w-4 h-4"></i>
+              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-7 h-6 rounded-field opacity-0 group-hover:opacity-100">
+              <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
             </button>
-            <div class="flex flex-col items-end gap-0.5">
+            <div class="flex flex-col items-center gap-1">
               <template x-for="e in msgNavEntries" :key="e.index">
                 <button data-slot="button" @click="jumpToMessage(e.index)" type="button"
                   :aria-label="'Go to ' + (e.role === 'assistant' ? 'response' : 'message')"
-                  :class="msgNavActive === e.index ? 'opacity-100' : 'opacity-60 hover:opacity-100'"
-                  class="gap-2 text-base-content/60 hover:text-base-content px-2.5 text-xs rounded-full relative flex items-center justify-end w-10 h-3 transition-opacity duration-100 group/tick hover:bg-transparent">
-                  <div class="rounded-full transition-all group-hover/tick:bg-primary group-hover/tick:w-4 duration-150 h-[1px] opacity-50 group-hover:opacity-100 w-1.5"
-                    :class="msgNavActive === e.index ? 'bg-primary !w-4 opacity-100' : 'bg-base-content/50'"></div>
+                  :class="msgNavActive === e.index ? 'opacity-100' : 'opacity-50 hover:opacity-100'"
+                  class="flex items-center justify-center w-8 h-4 rounded-field transition-opacity duration-100 group/tick hover:bg-base-content/5">
+                  <div class="rounded-field transition-all group-hover/tick:bg-primary group-hover/tick:w-5 duration-150 h-1 opacity-60 group-hover:opacity-100 w-2"
+                    :class="msgNavActive === e.index ? 'bg-primary !w-5 opacity-100' : 'bg-base-content/40'"></div>
                 </button>
               </template>
             </div>
             <button data-slot="button" @click="navMsg(1)" type="button" aria-label="Navigate to next message"
-              class="inline-flex items-center justify-center text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-8 h-8 rounded-full border border-transparent opacity-0 group-hover:opacity-100 -mt-1">
-              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-7 h-6 rounded-field opacity-0 group-hover:opacity-100">
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
             </button>
           </div>
         </div>
@@ -1658,36 +1668,29 @@
     <aside class="hub-panel">
       <div class="hub-inner">
               <template x-if="separateView || $store.ui.settingsOpen">
-        <div class="flex-1 min-h-0 flex flex-col relative">
+        <div class="flex-1 min-h-0 flex flex-col">
+
+          <!-- ═══ BACK BAR (top-left of the panel, shared for all separate pages) ═══ -->
+          <div x-show="separateView" class="shrink-0 flex items-center gap-1.5 px-2 sm:px-3 py-1.5 border-b border-base-content/10">
+            <button @click="goBack()" title="Go back (Esc)"
+              class="min-h-8 min-w-8 flex items-center justify-center rounded-field text-base-content/60 hover:text-base-content hover:bg-base-content/10 transition-colors">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <div class="flex-1 min-w-0"></div>
+            <!-- Agent editor: List / Node view toggle -->
+            <div x-show="separateView && separateView.kind === 'agent'" class="flex gap-0.5 p-0.5 rounded-full border border-base-content/10 bg-base-200/70">
+              <button type="button" @click="$store.ui.agentView = 'list'"
+                class="min-h-6 px-2.5 rounded-full text-xs font-medium transition-colors"
+                :class="$store.ui.agentView !== 'node' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">List</button>
+              <button type="button" @click="$store.ui.agentView = 'node'"
+                class="min-h-6 px-2.5 rounded-full text-xs font-medium transition-colors"
+                :class="$store.ui.agentView === 'node' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">Node</button>
+            </div>
+          </div>
 
           <!-- ═══ AGENT → full editor page ═══ -->
       <template x-if="separateView && separateView.kind === 'agent'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-                <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                  <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                    <button @click="goBack()"
-                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                      title="Close">
-                      <i data-lucide="x" class="w-4 h-4"></i>
-                                          </button>
-                    <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                    <i :data-lucide="separateView.icon || 'layers'" class="size-4 shrink-0 text-base-content/60"></i>
-                    <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                      <span x-text="separateView.title"></span>
-                      <span class="text-xs font-normal text-base-content/30" x-text="separateView.hint ? ' · ' + separateView.hint : ''"></span>
-                    </div>
-                    <!-- List / Node view toggle -->
-                    <div class="flex gap-1 p-1 bg-base-300 rounded-selector shrink-0">
-                      <button type="button" @click="$store.ui.agentView = 'list'"
-                        class="min-h-7 px-2.5 rounded-field text-xs font-medium transition-colors"
-                        :class="$store.ui.agentView !== 'node' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">List</button>
-                      <button type="button" @click="$store.ui.agentView = 'node'"
-                        class="min-h-7 px-2.5 rounded-field text-xs font-medium transition-colors"
-                        :class="$store.ui.agentView === 'node' ? 'bg-panel text-base-content' : 'text-base-content/50 hover:text-base-content'">Node</button>
-                    </div>
-                    <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                  </div>
-                </div>
                 <div class="flex-1 min-h-0 flex flex-col">
                   <template x-if="$store.ui.agentView !== 'node'">
                     <div class="flex-1 min-h-0 flex justify-center overflow-hidden">
@@ -2119,21 +2122,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <!-- ═══ GROUP COMPOSE → new group flow ═══ -->
       <template x-if="separateView && separateView.kind === 'groupCompose'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
-            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-              <button @click="goBack()"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                title="Close">
-                <i data-lucide="x" class="w-4 h-4"></i>
-                              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-              <i data-lucide="users" class="size-4 shrink-0 text-base-content/60"></i>
-              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                <span>New group</span>
-                <span class="text-xs font-normal text-base-content/30" x-text="' · pick 2+ agents'"></span>
-              </div>
-            </div>
-          </div>
           <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="min-h-full flex flex-col">
               <div class="w-full max-w-lg mx-auto flex flex-col px-4 py-5 gap-4">
@@ -2188,21 +2176,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <!-- ═══ BROADCAST COMPOSE → one prompt to many agents ═══ -->
       <template x-if="separateView && separateView.kind === 'broadcastCompose'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
-            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-              <button @click="goBack()"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                title="Close">
-                <i data-lucide="x" class="w-4 h-4"></i>
-                              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-              <i data-lucide="radio" class="size-4 shrink-0 text-base-content/60"></i>
-              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                <span>Broadcast</span>
-                <span class="text-xs font-normal text-base-content/30" x-text="' · one prompt to many agents'"></span>
-              </div>
-            </div>
-          </div>
           <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="min-h-full flex flex-col">
               <div class="w-full max-w-lg mx-auto flex flex-col px-4 py-5 gap-4">
@@ -2246,21 +2219,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <!-- ═══ AGENT PROFILE → WhatsApp-style contact page ═══ -->
       <template x-if="separateView && separateView.kind === 'agentProfile'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
-            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-              <button @click="goBack()"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                title="Close">
-                <i data-lucide="x" class="w-4 h-4"></i>
-                              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-              <i :data-lucide="separateView.icon || 'layers'" class="size-4 shrink-0 text-base-content/60"></i>
-              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                <span x-text="separateView.title"></span>
-                <span class="text-xs font-normal text-base-content/30" x-text="' · ' + separateView.hint"></span>
-              </div>
-            </div>
-          </div>
           <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="min-h-full flex flex-col">
               <div class="w-full max-w-lg mx-auto flex flex-col items-center px-4 py-8">
@@ -3565,21 +3523,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <!-- ═══ CONTACTS → full agents list ═══ -->
       <template x-if="separateView && separateView.kind === 'agentsList'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
-            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-              <button @click="goBack()"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                title="Close">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-              <i data-lucide="users" class="size-4 shrink-0 text-base-content/60"></i>
-              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                <span>Contacts</span>
-                <span class="text-xs font-normal text-base-content/30" x-text="' · ' + $store.agents.items.length + ' agent' + ($store.agents.items.length === 1 ? '' : 's')"></span>
-              </div>
-            </div>
-          </div>
           <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="py-1.5">
               <template x-for="a in $store.agents.items" :key="a.id">
@@ -3607,20 +3550,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <!-- ═══ ACTIONS → full actions list ═══ -->
       <template x-if="separateView && separateView.kind === 'actionsList'">
         <div class="flex-1 min-h-0 flex flex-col bg-panel">
-          <div class="shrink-0 border-b border-base-content/10 bg-panel">
-            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-              <button @click="goBack()"
-                class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                title="Close">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
-              <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-              <i data-lucide="layout-grid" class="size-4 shrink-0 text-base-content/60"></i>
-              <div class="truncate text-sm font-medium text-base-content flex-1 min-w-0">
-                <span>Actions</span>
-              </div>
-            </div>
-          </div>
           <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
             <div class="py-2 px-2 sm:px-3">
               <template x-for="a in actionItems" :key="a.id">
@@ -3646,20 +3575,11 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
             <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
               <div class="min-h-full flex flex-col items-center">
                 <div class="w-full  flex-1 flex flex-col bg-panel">
-                  <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                    <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                      <button @click="goBack()"
-                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                        title="Close">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                                              </button>
-                      <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                      <i :data-lucide="separateView.icon" class="size-4 shrink-0 text-base-content/60"></i>
-                      <div class="truncate text-sm font-medium text-base-content flex-1" x-text="separateCronTitle"></div>
-                      <span class="text-xs font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0 border" :class="cronStatusBadge(separateCron)" x-text="cronStatusText(separateCron)"></span>
-                      <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
+                  <div class="px-3 sm:px-4 pt-3 pb-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-mono uppercase tracking-wider rounded px-1.5 py-0.5 border" :class="cronStatusBadge(separateCron)" x-text="cronStatusText(separateCron)"></span>
+                      <span class="text-xs text-base-content/40 font-mono truncate" x-text="separateCronSummary(separateCron)"></span>
                     </div>
-                    <div class="text-xs text-base-content/40 font-mono px-3 sm:px-4 pb-2.5 -mt-0.5" x-text="separateCronSummary(separateCron)"></div>
                   </div>
                   <div class="px-3 sm:px-4 py-3">
                   <div class="flex flex-col gap-3 mt-1">
@@ -3706,19 +3626,8 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
             <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
               <div class="min-h-full flex flex-col items-center">
                 <div class="w-full  flex-1 flex flex-col bg-panel" x-data="webhookPanel" x-init="init()">
-<div class="shrink-0 border-b border-base-content/10 bg-panel">
-                    <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                      <button @click="goBack()"
-                        class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                        title="Close">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                                              </button>
-                      <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                      <i data-lucide="webhook" class="size-4 shrink-0 text-warning"></i>
-                      <div class="truncate text-sm font-medium text-base-content flex-1" x-text="form.label || 'Webhook'"></div>
-                      <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline" x-text="form.method"></span>
-                      <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                    </div>
+                  <div class="flex items-center gap-2 px-3 sm:px-4 pt-3">
+                    <span class="text-xs font-mono text-base-content/40 border border-base-content/10 rounded-field px-1.5 py-0.5" x-text="form.method"></span>
                   </div>
                   <div class="flex-1 min-h-0">
                     <!-- Webhook config page (opened from an agent's Triggers node) -->
@@ -4087,7 +3996,11 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                           </span>
                           <span class="inline-flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-sm bg-base-content/15"></span>
-                            <span x-text="llmContextStats.rlm.externalTurns + ' older turns in external memory'"></span>
+                            <span x-text="llmContextStats.rlm.externalTurns + ' older turns retrievable via the context tool'"></span>
+                          </span>
+                          <span x-show="llmContextStats.rlm.archived > 0" class="inline-flex items-center gap-1">
+                            <i data-lucide="archive" class="w-3 h-3 shrink-0 text-info/60"></i>
+                            <span x-text="llmContextStats.rlm.archived + ' archived by /compact'"></span>
                           </span>
                         </div>
                       </div>
@@ -4103,6 +4016,55 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                     </div>
 
                     <div class="h-px bg-base-content/10"></div>
+
+                    <!-- ═══ Recent tool activity (success / error) ═══ -->
+                    <div>
+                      <div class="flex items-center gap-2 mb-3">
+                        <i data-lucide="wrench" class="w-4 h-4 text-info shrink-0"></i>
+                        <span class="text-sm font-semibold text-base-content">Tool activity</span>
+                        <span class="ml-auto text-xs font-mono text-base-content/35 tabular-nums" x-text="toolActivity.length + ' tool call' + (toolActivity.length === 1 ? '' : 's')"></span>
+                      </div>
+                      <div x-show="!toolActivity.length" class="text-xs text-base-content/35 py-1">No tool calls recorded in this session yet.</div>
+                      <div class="divide-y divide-base-content/5" x-show="toolActivity.length">
+                        <template x-for="(t, i) in toolActivity" :key="i">
+                          <div class="group" x-data="{ open: false }">
+                            <div @click="open = !open" class="flex items-center gap-2 py-2 cursor-pointer hover:bg-base-content/5 transition-colors -mx-2 px-2 rounded-selector">
+                              <span class="inline-flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0"
+                                :class="t.status === 'success' ? 'text-success bg-success/10' : 'text-error bg-error/10'">
+                                <i :data-lucide="t.status === 'success' ? 'check' : 'x'" class="w-3 h-3"></i>
+                                <span x-text="t.status"></span>
+                              </span>
+                              <span class="text-xs font-mono text-base-content/70 shrink-0" x-text="t.name"></span>
+                              <span class="flex-1 min-w-0 text-xs text-base-content/40 truncate" x-text="t.status === 'error' ? (t.error || 'Failed') : 'Tool completed'"></span>
+                              <i data-lucide="chevron-down" class="w-3.5 h-3.5 shrink-0 text-base-content/30 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                            </div>
+                            <div x-show="open" class="pb-2.5 space-y-2">
+                              <div x-show="t.args" class="bg-base-300/40 rounded-field overflow-hidden">
+                                <div class="flex items-center gap-2 px-2.5 py-1 border-b border-base-content/5 bg-base-300/30">
+                                  <i data-lucide="braces" class="w-3 h-3 text-base-content/40"></i>
+                                  <span class="text-xs font-mono text-base-content/40">Arguments</span>
+                                </div>
+                                <pre class="p-1.5 text-[11px] text-base-content/50 font-mono whitespace-pre-wrap overflow-x-auto" x-text="toolArgsText(t)"></pre>
+                              </div>
+                              <div x-show="t.status === 'error' && t.error" class="bg-error text-error-content border border-error rounded-box px-3 py-2 flex items-start gap-2" role="alert">
+                                <i data-lucide="octagon-alert" class="w-3.5 h-3.5 shrink-0 mt-0.5"></i>
+                                <div class="min-w-0">
+                                  <span class="text-xs font-semibold block mb-0.5">Tool error</span>
+                                  <span class="text-xs text-error-content/70 leading-relaxed break-words" x-text="t.error"></span>
+                                </div>
+                              </div>
+                              <div x-show="t.status === 'success' && t.result" class="bg-base-300/40 rounded-field border border-base-content/5 overflow-hidden">
+                                <div class="flex items-center gap-2 px-2.5 py-1 border-b border-base-content/5 bg-base-300/30">
+                                  <i data-lucide="file-code" class="w-3 h-3 text-base-content/40"></i>
+                                  <span class="text-xs font-mono text-base-content/40">Result</span>
+                                </div>
+                                <pre class="p-1.5 text-[11px] text-base-content/70 font-mono leading-relaxed whitespace-pre-wrap overflow-x-auto max-h-56 overflow-y-auto" x-text="toolResultText(t)"></pre>
+                              </div>
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
 
                     <!-- ═══ What's sent to the LLM ═══ -->
                     <div>
@@ -4139,26 +4101,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <template x-if="separateView && separateView.kind === 'action' && separateView.id === 'trajectory'">
             <div class="flex-1 min-h-0 flex justify-center overflow-hidden">
               <div class="w-full  flex flex-col min-h-0 h-full bg-panel" x-data="trajectoryPanel" x-init="init()">
-                <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                  <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                    <button @click="goBack()"
-                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                      title="Close">
-                      <i data-lucide="x" class="w-4 h-4"></i>
-                                          </button>
-                    <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                    <i data-lucide="route" class="size-4 shrink-0 text-accent"></i>
-                    <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
-                      <span class="truncate min-w-0 text-sm font-medium text-base-content">Trajectory</span>
-                      <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Execution traces &amp; run history</span>
-                    </div>
-                    <button @click="purgeOld()" class="text-xs text-base-content/40 hover:text-error transition-colors shrink-0 px-1.5 py-1 rounded-selector" title="Purge old traces">
-                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                  </div>
-                </div>
-
                 <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-3 sm:px-4 py-3 space-y-3">
                   <!-- Filter -->
                   <div class="flex items-center gap-2">
@@ -4167,6 +4109,9 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                       class="flex-1 min-w-0 bg-base-300 text-sm text-base-content outline-none placeholder:text-base-content/25 rounded-field px-3 py-2 border border-base-content/10 focus:border-primary/30 transition-colors" />
                     <button @click="loadRuns()" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-primary transition-colors rounded-selector shrink-0" title="Refresh">
                       <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button @click="purgeOld()" class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-error transition-colors rounded-selector shrink-0" title="Purge old traces">
+                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                   </div>
 
@@ -4277,23 +4222,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
           <template x-if="separateView && separateView.kind === 'action' && separateView.id === 'dashboard'">
             <div class="flex-1 min-h-0 flex justify-center overflow-hidden">
               <div class="w-full  flex flex-col min-h-0 h-full bg-panel" x-data="dashboardPanel">
-                <div class="shrink-0 border-b border-base-content/10 bg-panel">
-                  <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-3 py-2.5">
-                    <button @click="goBack()"
-                      class="min-h-8 min-w-8 flex items-center justify-center text-base-content/40 hover:text-base-content transition-colors rounded-selector shrink-0"
-                      title="Close">
-                      <i data-lucide="x" class="w-4 h-4"></i>
-                                          </button>
-                    <span class="w-px h-5 bg-base-content/10 shrink-0"></span>
-                    <i data-lucide="gauge" class="size-4 shrink-0 text-success"></i>
-                    <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
-                      <span class="truncate min-w-0 text-sm font-medium text-base-content">Activity</span>
-                      <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Sessions, schedules &amp; system stats</span>
-                    </div>
-                    <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
-                  </div>
-                </div>
-
                 <div class="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-3 sm:px-4 py-3 space-y-3">
                   <!-- System -->
                   <div>
@@ -4538,6 +4466,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-w86shhrx.js"></script>
+<script type="module" src="./assets/index-wyw3r9ck.js"></script>
 </body>
 </html>
