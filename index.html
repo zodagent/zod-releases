@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-7fbe0629.css" />
+  <link rel="stylesheet" href="./assets/index-8608b859.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -1412,26 +1412,26 @@
         </div>
         <!-- ═══ MESSAGE NAVIGATOR (floating timeline rail) ═══ -->
         <div class="pointer-events-none absolute inset-y-0 right-0 z-20 flex items-center">
-          <div class="group flex-col items-center gap-0.5 hidden sm:flex pointer-events-auto bg-base-200/90 backdrop-blur-sm border border-base-content/10 rounded-box py-1.5 px-1"
-               x-show="msgNavEntries.length > 1">
+          <div class="group flex-col items-center gap-0 hidden sm:flex pointer-events-auto bg-panel border border-base-content/10 rounded-box py-1 px-0.5"
+             x-show="msgNavEntries.length > 1">
             <button data-slot="button" @click="navMsg(-1)" type="button" aria-label="Navigate to previous message"
-              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-7 h-6 rounded-field opacity-0 group-hover:opacity-100">
-              <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-6 h-5 rounded-field opacity-0 group-hover:opacity-100">
+              <i data-lucide="chevron-up" class="w-3 h-3"></i>
             </button>
-            <div class="flex flex-col items-center gap-1">
+            <div class="flex flex-col items-center gap-0.5">
               <template x-for="e in msgNavEntries" :key="e.index">
                 <button data-slot="button" @click="jumpToMessage(e.index)" type="button"
                   :aria-label="'Go to ' + (e.role === 'assistant' ? 'response' : 'message')"
                   :class="msgNavActive === e.index ? 'opacity-100' : 'opacity-50 hover:opacity-100'"
-                  class="flex items-center justify-center w-8 h-4 rounded-field transition-opacity duration-100 group/tick hover:bg-base-content/5">
-                  <div class="rounded-field transition-all group-hover/tick:bg-primary group-hover/tick:w-5 duration-150 h-1 opacity-60 group-hover:opacity-100 w-2"
-                    :class="msgNavActive === e.index ? 'bg-primary !w-5 opacity-100' : 'bg-base-content/40'"></div>
+                  class="flex items-center justify-center w-7 h-3.5 rounded-field transition-opacity duration-100 group/tick hover:bg-base-content/5">
+                  <div class="rounded-field transition-all group-hover/tick:bg-primary group-hover/tick:w-4 duration-150 h-[3px] opacity-60 group-hover:opacity-100 w-1.5"
+                    :class="msgNavActive === e.index ? 'bg-primary !w-4 opacity-100' : 'bg-base-content/40'"></div>
                 </button>
               </template>
             </div>
             <button data-slot="button" @click="navMsg(1)" type="button" aria-label="Navigate to next message"
-              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-7 h-6 rounded-field opacity-0 group-hover:opacity-100">
-              <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+              class="inline-flex items-center justify-center text-base-content/50 hover:text-base-content hover:bg-base-content/10 transition-all duration-200 w-6 h-5 rounded-field opacity-0 group-hover:opacity-100">
+              <i data-lucide="chevron-down" class="w-3 h-3"></i>
             </button>
           </div>
         </div>
