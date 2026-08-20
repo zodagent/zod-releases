@@ -9,7 +9,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-5929a122.css" />
+  <link rel="stylesheet" href="./assets/index-476950dd.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
@@ -3894,7 +3894,7 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                       <i data-lucide="cpu" class="size-4 shrink-0 text-info"></i>
                       <div class="flex items-baseline gap-1 sm:gap-2 min-w-0 flex-1">
                         <span class="truncate min-w-0 text-sm font-medium text-base-content">LLM Chat Context</span>
-                        <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Context usage &amp; execution traces</span>
+                        <span class="hidden sm:inline truncate min-w-0 text-xs font-normal text-base-content/30">Context consumption &amp; what's sent per request</span>
                       </div>
                       <span class="text-xs font-mono text-base-content/25 border border-base-content/10 rounded-field px-1.5 py-0.5 shrink-0 hidden sm:inline">esc</span>
                     </div>
@@ -3947,6 +3947,32 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
                           <span class="w-2 h-2 rounded-full" :style="'background:' + llmContextStats.rlm.liveColor"></span>
                           <span x-text="llmContextStats.rlm.livePct > 80 ? 'Live window near its budget — compact soon.' : llmContextStats.rlm.livePct > 50 ? 'Live window getting warm — watch it as the chat grows.' : 'Plenty of headroom in the live window.'"></span>
                         </span>
+                      </div>
+                    </div>
+
+                    <!-- ═══ What's sent to the LLM ═══ -->
+                    <div class="border border-base-content/10 rounded-box bg-panel p-3 sm:p-4">
+                      <div class="flex items-center gap-2 mb-3">
+                        <i data-lucide="send" class="w-4 h-4 text-info shrink-0"></i>
+                        <span class="text-sm font-semibold text-base-content">Sent to the LLM (next request)</span>
+                        <span class="ml-auto text-xs font-mono text-base-content/35 tabular-nums" x-text="llmRequestContext.turns + ' turns · ' + llmRequestContext.tokens.toLocaleString() + ' est. tokens'"></span>
+                      </div>
+                      <div class="divide-y divide-base-content/5 rounded-field border border-base-content/10 overflow-hidden">
+                        <template x-for="(m, i) in llmRequestContext.messages" :key="i">
+                          <div class="group" x-data="{ open: i === 0 }">
+                            <div @click="open = !open" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-base-content/5 transition-colors">
+                              <span class="text-[0.65rem] font-mono uppercase tracking-wider rounded px-1.5 py-0.5 shrink-0 border"
+                                :class="m.role === 'system' ? 'text-accent border-accent/20 bg-accent/8' : m.role === 'user' ? 'text-primary border-primary/20 bg-primary/8' : 'text-base-content/50 border-base-content/10'"
+                                x-text="m.role"></span>
+                              <span class="text-xs font-mono text-base-content/40 tabular-nums shrink-0" x-text="m.tokens.toLocaleString() + ' tok'"></span>
+                              <span class="flex-1 min-w-0 text-xs text-base-content/50 truncate" x-text="m.preview"></span>
+                              <i data-lucide="chevron-down" class="w-3.5 h-3.5 shrink-0 text-base-content/30 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+                            </div>
+                            <div x-show="open" class="px-3 pb-2.5">
+                              <pre class="text-[11px] leading-relaxed text-base-content/70 bg-base-300/50 border border-base-content/10 rounded-field p-2 overflow-x-auto whitespace-pre-wrap break-words max-h-72 overflow-y-auto" x-text="m.full"></pre>
+                            </div>
+                          </div>
+                        </template>
                       </div>
                     </div>
                   </div>
@@ -4374,6 +4400,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-kt8q2scx.js"></script>
+<script type="module" src="./assets/index-3h0m5hsg.js"></script>
 </body>
 </html>
