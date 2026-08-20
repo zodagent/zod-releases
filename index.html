@@ -343,8 +343,8 @@
             <div x-show="chatActive" class="flex-1 min-h-0 flex flex-col overflow-hidden"
            @keydown.ctrl.f.prevent="toggleSearch()" @keydown.meta.f.prevent="toggleSearch()">
         <div class="w-full flex flex-col min-h-0 flex-1 px-2 py-2">
-        <div class="mx-auto w-full max-w-3xl flex flex-col min-h-0 flex-1 border border-base-content/10 rounded-box bg-panel overflow-hidden">
-        <div x-show="showChatBack" x-cloak class="shrink-0 flex items-center justify-between gap-2 px-2 py-1.5 mx-auto mt-2 w-full max-w-[calc(100%-1rem)] rounded-full border border-base-content/10 bg-panel">
+        <div class="mx-auto w-full max-w-3xl flex flex-col min-h-0 flex-1 border border-base-content/10 rounded-box overflow-hidden">
+        <div x-show="showChatBack" x-cloak class="shrink-0 flex items-center justify-between gap-2 px-2 py-1.5 mx-auto mt-2 w-full max-w-[calc(100%-1rem)] rounded-full border border-base-content/10">
           <div class="flex items-center gap-1.5 min-w-0">
             <button @click="goBack()"
               class="min-h-8 min-w-8 flex items-center justify-center text-base-content/60 hover:text-primary transition-colors rounded-full"
@@ -587,7 +587,7 @@
                       <span class="font-medium text-primary/70" x-text="m.replyTo && (m.replyTo.agent || m.replyTo.role)"></span>
                       <span class="truncate" x-text="m.replyTo && m.replyTo.text"></span>
                     </div>
-                    <div x-show="isTextRole(m)" class="bg-base-300 border border-base-content/10 rounded-box overflow-hidden mb-2">
+                    <div x-show="isTextRole(m)" class="bg-panel border border-base-content/10 rounded-box overflow-hidden mb-2">
                         <div class="px-2.5 py-2">
                           <div class="prose" x-effect="renderChatHtml($el, m.text)"></div>
                         </div>
@@ -746,7 +746,7 @@
                      @contextmenu.prevent="openContextMenu($event, i)"
                      :style="swipeState.active && swipeState.msgIndex === i ? 'transform: translateX(' + swipeState.currentX + 'px); transition: transform 0.1s ease' : ''">
                   <div class="flex-1 min-w-0 w-full max-w-3xl">
-                    <div class="bg-base-300 border border-base-content/10 rounded-box overflow-hidden">
+                    <div class="bg-panel border border-base-content/10 rounded-box overflow-hidden">
                     <div class="flex items-center gap-2 px-2.5 pt-2 pb-1.5 border-b border-base-content/5">
                       <div class="w-8 h-8 rounded-full overflow-hidden shrink-0"
                            :class="m.streaming ? 'agent-avatar-pulse' : ''">
