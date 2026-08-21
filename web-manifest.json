@@ -6,6 +6,7 @@
   "icons/icon128.png",
   "icons/icon48.png",
   "index.html",
+  "tray-icon.svg",
   "wallpapers/serene-mountains.jpg",
   "wallpapers/misty-forest.jpg",
   "wallpapers/ocean-beach.jpg",
@@ -15,8 +16,9 @@
   "wallpapers/anime-girl-fan.png",
   "wallpapers/deep-woods.jpg",
   "splash.js",
-  "assets/index-v4vhnqvg.js",
-  "assets/index-5a521c43.css",
+  "assets/index-24acb62b.css",
+  "assets/index-v9xjd4cz.js",
   "favicon-dark.svg",
+  "tray-icon.png",
   "manifest.webmanifest"
 ]
