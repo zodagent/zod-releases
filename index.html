@@ -9,14 +9,14 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>ZOD - Make It Yours !</title>
   <link rel="icon" type="image/svg+xml" href="./favicon-dark.svg" />
-  <link rel="stylesheet" href="./assets/index-bbdafaa9.css" />
+  <link rel="stylesheet" href="./assets/index-5a521c43.css" />
   <script src="./splash.js" defer></script>
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self';  script-src 'self' 'unsafe-eval';  style-src 'self' 'unsafe-inline';  img-src 'self' data: blob: https: http:;  font-src 'self' data:;  connect-src 'self' https: http: ws: wss:;  worker-src 'self' blob:;  child-src 'self' blob:;  media-src 'self' blob:;  object-src 'none';  base-uri 'self';  form-action 'self'" />
   </head>
   <body class="min-h-screen min-h-dvh overflow-hidden safe-top" style="position:fixed;top:0;left:0;right:0;bottom:0;">
     <!-- Splash / Loading Screen -->
-  <div id="splash" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center min-h-dvh bg-canvas splash-fade">
+  <div id="splash" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center min-h-dvh bg-canvas">
     <div class="w-full max-w-lg px-4">
       <!-- Logo - full, left-aligned -->
       <div class="flex justify-start mb-3 text-primary logo-splash">
@@ -61,7 +61,7 @@
   </div>
 
 
-  <div id="app" class="app-hidden h-full" x-data="sessionPage">
+  <div id="app" x-cloak class="h-full" x-data="sessionPage">
 
     <!-- Mobile sidebar backdrop overlay -->
     <div class="sidebar-backdrop" :class="sidebarOpen ? 'active' : ''" @click="sidebarOpen = false"></div>
@@ -344,7 +344,7 @@
            @keydown.ctrl.f.prevent="toggleSearch()" @keydown.meta.f.prevent="toggleSearch()">
         <div class="w-full flex flex-col min-h-0 flex-1 px-2 py-2">
         <div class="mx-auto w-full max-w-3xl flex flex-col min-h-0 flex-1 border border-base-content/10 rounded-box overflow-hidden">
-        <div x-show="showChatBack" x-cloak class="shrink-0 flex items-center justify-between gap-2 px-2 py-1.5 mx-auto mt-2 w-full max-w-[calc(100%-1rem)] rounded-full border border-base-content/10">
+        <div x-show="showChatBack" x-cloak class="shrink-0 flex items-center justify-between gap-2 px-2 py-1.5 mx-auto mt-2 w-full max-w-[calc(100%-1rem)] rounded-full border border-base-content/10 bg-panel">
           <div class="flex items-center gap-1.5 min-w-0">
             <button @click="goBack()"
               class="min-h-8 min-w-8 flex items-center justify-center text-base-content/60 hover:text-primary transition-colors rounded-full"
@@ -4627,6 +4627,6 @@ class="relative z-[1] w-full bg-transparent text-transparent caret-primary text-
 
   <div id="zod-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-box text-xs bg-base-200 text-base-content border border-base-content/10 hidden" role="status"></div>
 
-<script type="module" src="./assets/index-jnyzh7c1.js"></script>
+<script type="module" src="./assets/index-v4vhnqvg.js"></script>
 </body>
 </html>

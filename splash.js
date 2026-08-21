@@ -1,6 +1,9 @@
-// Splash screen: greeting time, braille progress animation, hide after 3s.
-// Kept as an external classic script so the production Content-Security-Policy
-// can ban inline scripts entirely.
+// Splash screen: greeting time, braille progress animation. Stays visible until
+// the app module has finished loading and Alpine has booted — signaled via
+// window.__zodAppReady — so the user never sees a half-rendered app. A hard
+// timeout force-reveals the app if the module fails to boot. Kept as an external
+// classic script so the production Content-Security-Policy can ban inline
+// scripts entirely.
 
 (function () {
   var splashTime = document.querySelector('.splash-time')
@@ -28,10 +31,34 @@
   }
   requestAnimationFrame(animateBraille)
 
-  setTimeout(function () {
+  var MIN_SHOW = 2000      // never flash the splash away faster than this
+  var HARD_TIMEOUT = 20000 // if the app never signals ready, bail out anyway
+  var bootStart = performance.now()
+  var done = false
+
+  function reveal() {
+    if (done) return
+    done = true
     var splash = document.getElementById('splash')
+    if (!splash) return
+    splash.classList.add('splash-fade')
+    setTimeout(function () {
+      splash.style.display = 'none'
+    }, 500)
+  }
+
+  function forceReveal() {
     var app = document.getElementById('app')
-    if (splash) splash.style.display = 'none'
-    if (app) app.classList.remove('app-hidden')
-  }, 3000)
+    if (app && app.hasAttribute('x-cloak')) app.removeAttribute('x-cloak')
+    reveal()
+  }
+
+  function poll() {
+    if (!document.getElementById('splash')) return
+    var elapsed = performance.now() - bootStart
+    if (window.__zodAppReady === true && elapsed >= MIN_SHOW) return reveal()
+    if (elapsed >= HARD_TIMEOUT) return forceReveal()
+    setTimeout(poll, 100)
+  }
+  poll()
 })()
